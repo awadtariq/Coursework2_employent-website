@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="top">
+        <h1>Jobs Database</h1>
+    </ui:define>
+
+    <ui:define name="left">
+        <h:link outcome="/index.xhtml" value="Home" />
+        <h:link outcome="/Login.xhtml" value="Login" />
+        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
+        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
+        <h:link outcome="/Register.xhtml" value="Register" />
+        <h:link outcome="/Contact.xhtml" value="Contact" />
+        <h:link outcome="/Messages.xhtml" value="Messages" />
+        <h:link outcome="/About.xhtml" value="About Us" />
+    </ui:define>
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{loginBean.loggedIn}">
+            <h2>Available Jobs</h2>
+
+            <h:form>
+                <h:commandButton value="Add New Job" action="#{jobBean.prepareCreate}" />
+                <br/><br/>
+
+                <h:outputLabel for="search" value="Search Jobs: " />
+                <h:inputText id="search" value="#{jobBean.searchText}">
+                <f:ajax event="keyup" render="jobsTable suggestionsBox suggestionCount" />
+                </h:inputText>
+                <br/><br/>
+
+                <h:outputText id="suggestionCount" value="Number of suggestions: #{jobBean.suggestions.size()}" />
+                <br/><br/>
+
+                <h:panelGroup id="suggestionsBox" layout="block" styleClass="suggestionBox">
+                <ui:repeat value="#{jobBean.suggestions}" var="suggestion">
+                <h:panelGroup layout="block" styleClass="suggestionItem">
+                <h:outputText value="#{suggestion}" />
+                </h:panelGroup>
+                </ui:repeat>
+                </h:panelGroup>
+                <br/>
+
+                <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" border="1" styleClass="jobTable">
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        #{job.jobTitle}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Type</f:facet>
+                        #{job.jobTypeDisplay}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        #{job.location}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Salary ($)</f:facet>
+                        #{job.salary}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Starts</f:facet>
+                        #{job.jobBegins}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Contact Email</f:facet>
+                        #{job.contactEmail}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        #{job.status}
+                    </h:column>
+
+                    <h:column>
+                    <f:facet name="header">Actions</f:facet>
+
+                    <!-- Edit only visible to owner -->
+                    <h:commandButton value="Edit"
+                    rendered="#{loginBean.loggedIn and job.user.userID == loginBean.currentUser.userID}"
+                    action="#{jobBean.prepareEdit(job)}" />
+
+                    <!-- Delete only visible to owner -->
+                    <h:commandButton value="Delete"
+                    rendered="#{loginBean.loggedIn and job.user.userID == loginBean.currentUser.userID}"
+                    action="#{jobBean.deleteJob(job)}">
+                    <f:ajax render="jobsTable messages" />
+                    </h:commandButton>
+
+                    <!-- Track visible to any logged-in user -->
+                    <h:commandButton value="Track"
+                    rendered="#{loginBean.loggedIn}"
+                    action="#{jobBean.trackJob(job)}">
+                    <f:ajax render="messages" />
+                    </h:commandButton>
+
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{not loginBean.loggedIn}">
+    <h2>Access denied</h2>
+    <p>You need an account to view available jobs.</p>
+    <p>Please log in if you already have an account, or register if you are a new user.</p>
+
+    <h:link outcome="/Login.xhtml" value="Login" />
+    <h:outputText value=" | " />
+    <h:link outcome="/Register.xhtml" value="Register" />
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>
+
