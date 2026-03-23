@@ -232,7 +232,7 @@ public String trackJob(Job job) {
             .setParameter("jobId", managedJob.getJobID())
             .getSingleResult();
 
-    // ✅ Only insert if not already tracked
+    // Only insert if not already tracked
     if (count == 0) {
         TrackedJob trackedJob = new TrackedJob();
         trackedJob.setUser(managedUser);
