@@ -14,7 +14,23 @@
 
 
         <div id="top" class="top">
-            <ui:insert name="top">Top</ui:insert>
+    <ui:insert name="top">Top</ui:insert>
+
+    <!-- Logged-in view -->
+    <h:panelGroup rendered="#{loginBean.loggedIn and loginBean.currentUser != null}" style="float:right;">
+        <h:outputText value="Hello, #{loginBean.currentUser.username}" />
+        <h:outputText value=" | " />
+        <h:form style="display:inline;">
+            <h:commandLink value="Logout" action="#{loginBean.logout}" />
+        </h:form>
+    </h:panelGroup>
+
+    <!-- Logged-out view -->
+    <h:panelGroup rendered="#{not loginBean.loggedIn}" style="float:right;">
+        <h:link outcome="/Login.xhtml" value="Login" />
+        <h:outputText value=" | " />
+        <h:link outcome="/Register.xhtml" value="Register" />
+    </h:panelGroup>
         </div>
         <div>
             <div id="left">
@@ -27,3 +43,7 @@
     </h:body>
 
 </html>
+
+
+
+
