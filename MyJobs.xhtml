@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="top">
+        <h1>My Jobs</h1>
+    </ui:define>
+
+    <ui:define name="left">
+        <h:link outcome="/index.xhtml" value="Home" />
+        <h:link outcome="/Login.xhtml" value="Login" />
+        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
+        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
+        <h:link outcome="/Register.xhtml" value="Register" />
+        <h:link outcome="/Contact.xhtml" value="Contact" />
+        <h:link outcome="/Messages.xhtml" value="Messages" />
+        <h:link outcome="/About.xhtml" value="About Us" />
+    </ui:define>
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{loginBean.loggedIn}">
+            <h2>Tracked Jobs</h2>
+
+            <h:form>
+                <h:dataTable value="#{jobBean.trackedJobs}" var="tracked" border="1" styleClass="jobTable">
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        #{tracked.job.jobTitle}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Type</f:facet>
+                        #{tracked.job.jobTypeDisplay}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        #{tracked.job.location}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Description</f:facet>
+                        #{tracked.job.description}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Contact Email</f:facet>
+                        #{tracked.job.contactEmail}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Untrack" action="#{jobBean.untrackJob(tracked)}" />
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{not loginBean.loggedIn}">
+    <h2>Access denied</h2>
+    <p>You need an account to track and manage jobs.</p>
+    <p>If you already have an account, please log in. If not, you can register first.</p>
+
+    <h:link outcome="/Login.xhtml" value="Login" />
+    <h:outputText value=" | " />
+    <h:link outcome="/Register.xhtml" value="Register" />
+        </ui:fragment>
+    </ui:define>
+
+</ui:composition>

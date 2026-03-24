@@ -1,0 +1,285 @@
+package beans;
+
+import entity.Job;
+import entity.User;
+import entity.TrackedJob;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+import jakarta.inject.Inject;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+
+
+
+@Named
+@SessionScoped
+public class JobBean implements Serializable {
+
+    @PersistenceContext(unitName = "JobsDatabasePU")
+    private EntityManager em;
+
+    private Job selectedJob = new Job();
+    private String searchText;
+    private String salaryInput;
+    private String jobBeginsInput;
+    @Inject
+    private LoginBean loginBean;
+
+    public List<Job> getJobs() {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            return em.createQuery("SELECT j FROM Job j", Job.class).getResultList();
+        }
+
+        return em.createQuery(
+                "SELECT j FROM Job j WHERE LOWER(j.jobTitle) LIKE :search OR LOWER(j.location) LIKE :search OR LOWER(j.jobType) LIKE :search",
+                Job.class)
+                .setParameter("search", "%" + searchText.toLowerCase() + "%")
+                .getResultList();
+    }
+
+    public String getSalaryInput() {
+    return salaryInput;
+    }
+
+    public void setSalaryInput(String salaryInput) {
+    this.salaryInput = salaryInput;
+    }
+
+    public String getJobBeginsInput() {
+    return jobBeginsInput;
+    }
+
+    public void setJobBeginsInput(String jobBeginsInput) {
+    this.jobBeginsInput = jobBeginsInput;
+    }
+    public Job getSelectedJob() {
+        return selectedJob;
+    }
+
+    public void setSelectedJob(Job selectedJob) {
+        this.selectedJob = selectedJob;
+    }
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
+
+   public String prepareCreate() {
+    selectedJob = new Job();
+    jobBeginsInput = "";
+    salaryInput = "";
+    return "/AddJob.xhtml?faces-redirect=true";
+    }
+   
+    public String prepareEdit(Job job) {
+    this.selectedJob = job;
+
+    if (job.getSalary() != null) {
+        this.salaryInput = job.getSalary().toString();
+    } else {
+        this.salaryInput = "";
+    }
+
+    if (job.getJobBegins() != null) {
+        this.jobBeginsInput = job.getJobBegins().toString();
+    } else {
+        this.jobBeginsInput = "";
+    }
+
+    return "/EditJob.xhtml?faces-redirect=true";
+}
+
+    @Transactional
+    public String createJob() {
+    selectedJob.setPostedDate(LocalDate.now());
+    selectedJob.setStatus("OPEN");
+
+    if (salaryInput != null && !salaryInput.isBlank()) {
+        selectedJob.setSalary(new java.math.BigDecimal(salaryInput));
+    } else {
+        throw new IllegalStateException("Salary input is blank.");
+    }
+
+    if (jobBeginsInput != null && !jobBeginsInput.isBlank()) {
+        selectedJob.setJobBegins(LocalDate.parse(jobBeginsInput));
+    } else {
+        throw new IllegalStateException("Job begins input is blank.");
+    }
+
+    User sessionUser = loginBean.getCurrentUser();
+    if (sessionUser == null) {
+        throw new IllegalStateException("No logged-in user found.");
+    }
+
+    User managedUser = em.find(User.class, sessionUser.getUserID());
+    if (managedUser == null) {
+        throw new IllegalStateException("Logged-in user not found in database.");
+    }
+
+    selectedJob.setUser(managedUser);
+
+    if (selectedJob.getJobTitle() == null || selectedJob.getJobTitle().isBlank()) {
+        throw new IllegalStateException("Job title is blank.");
+    }
+
+    if (selectedJob.getDescription() == null || selectedJob.getDescription().isBlank()) {
+        throw new IllegalStateException("Description is blank.");
+    }
+
+    if (selectedJob.getJobType() == null || selectedJob.getJobType().isBlank()) {
+        throw new IllegalStateException("Job type is blank.");
+    }
+
+    if (selectedJob.getLocation() == null || selectedJob.getLocation().isBlank()) {
+        throw new IllegalStateException("Location is blank.");
+    }
+
+    em.persist(selectedJob);
+    em.flush();
+
+    return "/Jobs.xhtml?faces-redirect=true";
+        }
+
+    @Transactional
+    public String updateJob() {
+    if (salaryInput != null && !salaryInput.isBlank()) {
+        selectedJob.setSalary(new java.math.BigDecimal(salaryInput));
+    }
+
+    if (jobBeginsInput != null && !jobBeginsInput.isBlank()) {
+        selectedJob.setJobBegins(LocalDate.parse(jobBeginsInput));
+    }
+
+    em.merge(selectedJob);
+    return "/Jobs.xhtml?faces-redirect=true";
+}
+
+    @Transactional
+public void deleteJob(Job job) {
+
+    Job managedJob = em.find(Job.class, job.getJobID());
+    User currentUser = loginBean.getCurrentUser();
+
+    if (managedJob == null) {
+        return;
+    }
+
+    if (!managedJob.getUser().getUserID().equals(currentUser.getUserID())) {
+
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Permission denied",
+                "You didn't post that job!")
+        );
+
+        return;
+    }
+
+    em.remove(managedJob);
+
+    FacesContext.getCurrentInstance().addMessage(null,
+        new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "Success",
+            "Job deleted successfully.")
+    );
+}
+    
+    public List<String> getSuggestions() {
+    if (searchText == null || searchText.trim().isEmpty()) {
+        return java.util.Collections.emptyList();
+    }
+    
+    
+
+    return em.createQuery(
+            "SELECT DISTINCT j.jobTitle FROM Job j WHERE LOWER(j.jobTitle) LIKE :search",
+            String.class)
+            .setParameter("search", "%" + searchText.toLowerCase() + "%")
+            .setMaxResults(5)
+            .getResultList();
+}
+    
+    @Transactional
+public String trackJob(Job job) {
+
+    User sessionUser = loginBean.getCurrentUser();
+    if (sessionUser == null) {
+        throw new IllegalStateException("No logged-in user found.");
+    }
+
+    User managedUser = em.find(User.class, sessionUser.getUserID());
+    Job managedJob = em.find(Job.class, job.getJobID());
+
+    if (managedUser == null || managedJob == null) {
+        throw new IllegalStateException("User or job not found.");
+    }
+
+    // 🔍 Check if already tracked
+    Long count = em.createQuery(
+            "SELECT COUNT(t) FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.jobID = :jobId",
+            Long.class)
+            .setParameter("userId", managedUser.getUserID())
+            .setParameter("jobId", managedJob.getJobID())
+            .getSingleResult();
+
+    // ✅ Only insert if not already tracked
+    if (count == 0) {
+        TrackedJob trackedJob = new TrackedJob();
+        trackedJob.setUser(managedUser);
+        trackedJob.setJob(managedJob);
+        em.persist(trackedJob);
+    }
+
+    return "/Jobs.xhtml?faces-redirect=true";
+}
+
+    public List<TrackedJob> getTrackedJobs() {
+    User sessionUser = loginBean.getCurrentUser();
+    if (sessionUser == null) {
+        return java.util.Collections.emptyList();
+    }
+
+    return em.createQuery(
+            "SELECT t FROM TrackedJob t WHERE t.user.userID = :userId",
+            TrackedJob.class)
+            .setParameter("userId", sessionUser.getUserID())
+            .getResultList();
+}
+    
+    @Transactional
+    public String untrackJob(TrackedJob trackedJob) {
+    TrackedJob managedTrackedJob = em.find(TrackedJob.class, trackedJob.getTrackID());
+
+    if (managedTrackedJob != null) {
+        em.remove(managedTrackedJob);
+    }
+
+    return "/MyJobs.xhtml?faces-redirect=true";
+}
+    public boolean isTracked(Job job) {
+    User sessionUser = loginBean.getCurrentUser();
+
+    if (sessionUser == null || job == null) {
+        return false;
+    }
+
+    Long count = em.createQuery(
+            "SELECT COUNT(t) FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.jobID = :jobId",
+            Long.class)
+            .setParameter("userId", sessionUser.getUserID())
+            .setParameter("jobId", job.getJobID())
+            .getSingleResult();
+
+    return count > 0;
+}
+}
