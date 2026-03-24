@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+        <title>Jobs Pool</title>
+    </h:head>
+
+    <h:body>
+
+        <div id="top" class="top">
+            <div class="header-brand">
+                <ui:insert name="top">
+                    <h1><i class="fa-solid fa-briefcase"></i> Jobs Pool</h1>
+                </ui:insert>
+            </div>
+
+            <div class="top-links">
+                <h:panelGroup rendered="#{loginBean.loggedIn and loginBean.currentUser != null}">
+                    <span style="color: #e2e8f0; margin-right: 15px; font-weight: 500;">
+                        <i class="fa-solid fa-user"></i> Hello, #{loginBean.currentUser.username}
+                    </span>
+                    <h:form style="display:inline;">
+                        <h:commandLink value="Logout" action="#{loginBean.logout}" styleClass="logout-btn" />
+                    </h:form>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{not loginBean.loggedIn}">
+                    <h:link outcome="/Login.xhtml"><i class="fa-solid fa-right-to-bracket"></i> Login</h:link>
+                    <h:link outcome="/Register.xhtml"><i class="fa-solid fa-user-plus"></i> Register</h:link>
+                </h:panelGroup>
+            </div>
+        </div>
+
+        <div id="left">
+            <ui:insert name="left">
+                <h:link outcome="index"><i class="fa-solid fa-house"></i> Home</h:link>
+                <h:link outcome="Jobs"><i class="fa-solid fa-list"></i> Job Listings</h:link>
+            </ui:insert>
+        </div>
+
+        <div id="content" class="left_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+    </h:body>
+</html>

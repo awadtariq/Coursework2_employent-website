@@ -1,0 +1,167 @@
+/* Import modern font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Base Styles --- */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f5f9;
+    color: #334155;
+    
+    /* Modern Grid Layout */
+    display: grid;
+    grid-template-columns: 250px 1fr; 
+    grid-template-rows: auto 1fr;     
+    min-height: 100vh;
+}
+
+/* --- Top Header --- */
+#top {
+    grid-column: 1 / -1; 
+    background: linear-gradient(135deg, #1f3c88, #2563eb);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.header-brand h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.top-links a, .logout-btn {
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 20px;
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+.top-links a:hover, .logout-btn:hover {
+    color: #ffffff;
+}
+
+/* --- Left Sidebar --- */
+#left {
+    background-color: #ffffff;
+    padding: 25px 20px;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+}
+
+#left a {
+    display: block;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #475569;
+    border-radius: 8px; 
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+#left a:hover {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+}
+
+/* --- Main Content Area --- */
+#content {
+    padding: 40px;
+    background-color: #f8fafc;
+}
+
+h2 {
+    color: #1e293b;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+/* --- Forms & Inputs --- */
+#content label {
+    display: block;
+    font-weight: 500;
+    color: #475569;
+    margin-top: 20px;   /* Spacing above label */
+    margin-bottom: 6px; /* Tight spacing between label and input */
+}
+
+/* Added input[type="password"] for your h:inputSecret */
+#content input[type="text"], 
+#content input[type="email"], 
+#content input[type="password"],
+#content input[type="date"],
+#content textarea {
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 400px; 
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+    margin-bottom: 0; /* Let the label's margin-top handle the spacing */
+    background-color: #ffffff;
+}
+
+#content input:focus, 
+#content textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
+}
+
+/* Modern Button Style */
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 25px;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* --- Alerts & Messages --- */
+.successMessage, .errorMessage {
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: inline-block;
+    list-style-type: none; /* Removes bullet points from JSF messages */
+}
+
+.successMessage {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.errorMessage {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

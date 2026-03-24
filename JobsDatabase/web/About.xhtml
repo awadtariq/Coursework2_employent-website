@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="top">
+        <h1>About Job Finder</h1>
+    </ui:define>
+
+    <ui:define name="left">
+        <h:link outcome="/index.xhtml" value="Home" />
+        <h:link outcome="/Login.xhtml" value="Login" />
+        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
+        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
+        <h:link outcome="/Register.xhtml" value="Register" />
+        <h:link outcome="/Contact.xhtml" value="Contact" />
+        <h:link outcome="/Messages.xhtml" value="Messages" />
+        <h:link outcome="/About.xhtml" value="About Us" />
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h2>Who We Are</h2>
+        <p>
+            Job Finder is a web-based job tracking system developed as part of the CS5003 coursework project.
+            The platform allows users to browse available job opportunities, track jobs,
+            and manage tracked jobs.
+        </p>
+
+        <h2>What You Can Do</h2>
+        <ul>
+            <li>Register and log in securely</li>
+            <li>Browse available jobs</li>
+            <li>Search using AJAX-powered filtering</li>
+            <li>Track jobs you are interested in</li>
+            <li>Create, edit and delete job listings</li>
+        </ul>
+
+        <h2>Technology Used</h2>
+        <ul>
+            <li>Jakarta Server Faces (JSF)</li>
+            <li>Jakarta Persistence API (JPA)</li>
+            <li>GlassFish Server</li>
+            <li>Apache Derby (JavaDB)</li>
+        </ul>
+
+        <p>
+            This project was developed as a group coursework submission for CS5003.
+        </p>
+
+    </ui:define>
+
+</ui:composition>
