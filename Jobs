@@ -100,9 +100,9 @@
 
                     <!-- Track visible to any logged-in user -->
                     <h:commandButton value="Track"
-                    rendered="#{loginBean.loggedIn}"
+                    rendered="#{loginBean.loggedIn and not jobBean.isTracked(job)}"
                     action="#{jobBean.trackJob(job)}">
-                    <f:ajax render="messages" />
+                    <f:ajax render="jobsTable messages" />
                     </h:commandButton>
 
                     </h:column>
