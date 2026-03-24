@@ -232,7 +232,7 @@ public String trackJob(Job job) {
             .setParameter("jobId", managedJob.getJobID())
             .getSingleResult();
 
-    // Only insert if not already tracked
+    // ✅ Only insert if not already tracked
     if (count == 0) {
         TrackedJob trackedJob = new TrackedJob();
         trackedJob.setUser(managedUser);
@@ -265,5 +265,21 @@ public String trackJob(Job job) {
     }
 
     return "/MyJobs.xhtml?faces-redirect=true";
+}
+    public boolean isTracked(Job job) {
+    User sessionUser = loginBean.getCurrentUser();
+
+    if (sessionUser == null || job == null) {
+        return false;
+    }
+
+    Long count = em.createQuery(
+            "SELECT COUNT(t) FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.jobID = :jobId",
+            Long.class)
+            .setParameter("userId", sessionUser.getUserID())
+            .setParameter("jobId", job.getJobID())
+            .getSingleResult();
+
+    return count > 0;
 }
 }
