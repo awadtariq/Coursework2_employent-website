@@ -1,223 +1,93 @@
-/* Import modern font from Google Fonts */
+/* --- style.css --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* --- Base Styles --- */
 body {
     font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #334155;
+    margin: 0; padding: 0; color: #334155;
     
-    /* Modern Background Image from Unsplash */
+    /* ONE Background Image for the whole site */
     background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop'); 
-    background-size: cover;            
-    background-position: center;       
+    background-size: cover; 
+    background-position: center; 
     background-attachment: fixed;      
     
-    /* Modern Grid Layout */
-    display: grid;
-    grid-template-columns: 250px 1fr; 
-    grid-template-rows: auto 1fr;     
+    display: grid; 
+    grid-template-columns: 260px 1fr; 
+    grid-template-rows: auto 1fr; 
     min-height: 100vh;
 }
 
-/* --- Top Header & Logo --- */
+/* --- Top Header --- */
 #top {
     grid-column: 1 / -1; 
-    background: linear-gradient(135deg, #1f3c88, #2563eb);
-    color: white;
-    padding: 20px 30px;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 20;
 }
 
-/* Make the text logo look like an image logo */
-.header-brand h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Space between the icon and text */
-}
-
-/* Give the briefcase icon a cool background circle */
-.header-brand h1 i {
-    background-color: white;
-    color: #2563eb; /* Blue icon */
-    padding: 10px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+.header-brand h1 { margin: 0; font-size: 1.7rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.header-brand h1 i { background-color: white; color: #2563eb; padding: 8px; border-radius: 50%; font-size: 1.1rem; }
 
 .top-links a, .logout-btn {
-    color: #e2e8f0;
-    text-decoration: none;
-    font-weight: 500;
-    margin-left: 20px;
-    transition: color 0.3s ease;
-    background: none;
-    border: none;
-    font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
+    color: #ffffff !important; text-decoration: none !important;
+    font-weight: 600; margin-left: 20px; font-size: 0.9rem; transition: 0.2s;
 }
 
-.top-links a:hover, .logout-btn:hover {
-    color: #ffffff;
+/* --- CONSISTENT SIDEBAR --- */
+#left { 
+    /* Semi-transparent white to let the main background show through slightly */
+    background-color: rgba(255, 255, 255, 0.7); 
+    backdrop-filter: blur(15px); /* This makes the sidebar look like frosted glass */
+    -webkit-backdrop-filter: blur(15px);
+    padding: 30px 15px; 
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-/* --- Left Sidebar --- */
-#left {
-    background-color: #ffffff; 
-    padding: 25px 20px;
-    border-right: 1px solid #e2e8f0;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-}
-
-#left a {
-    display: block;
-    padding: 12px 15px;
-    margin-bottom: 8px;
-    text-decoration: none;
-    color: #475569;
-    border-radius: 8px; 
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-#left a:hover {
-    background-color: #eff6ff;
-    color: #1d4ed8;
-}
-
-/* --- Main Content Area --- */
-#content {
-    padding: 40px;
-    
-    /* Frosted glass effect so the background image gracefully peeks through! */
-    background-color: rgba(248, 250, 252, 0.92); 
-    backdrop-filter: blur(5px); 
-}
-
-h2 {
-    color: #1e293b;
+#left a { 
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; text-decoration: none; 
+    color: #1e293b; border-radius: 10px; 
+    transition: all 0.3s ease; 
     font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 25px;
 }
 
-/* --- Forms & Inputs --- */
-#content label {
-    display: block;
-    font-weight: 500;
-    color: #475569;
-    margin-top: 20px;   
-    margin-bottom: 6px; 
+#left a:hover { 
+    background-color: rgba(37, 99, 235, 0.1); 
+    color: #2563eb; 
+    transform: translateX(5px);
 }
 
-#content input[type="text"], 
-#content input[type="email"], 
-#content input[type="password"],
-#content input[type="date"],
-#content textarea {
-    padding: 12px 15px;
-    width: 100%;
-    max-width: 400px; 
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    display: block;
-    margin-bottom: 0; 
-    background-color: #ffffff;
+/* --- CONSISTENT CONTENT AREA --- */
+#content { 
+    padding: 40px; 
+    /* Lighter transparency than the sidebar for contrast */
+    background-color: rgba(255, 255, 255, 0.4); 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px);
 }
 
-#content input:focus, 
-#content textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
+/* Hero Card Styling */
+.hero-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    border: 1px solid white;
 }
 
-/* --- Modern Button Style --- */
+/* Reusable Components */
 .btn-primary {
-    background-color: #2563eb;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 25px;
-    display: inline-block;
+    background-color: #2563eb; color: white; padding: 12px 24px; border: none;
+    border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
 }
 
-.btn-primary:hover {
-    background-color: #1d4ed8;
-}
+.btn-primary:hover { background-color: #1d4ed8; transform: translateY(-2px); }
 
-/* --- Alerts & Messages --- */
-.successMessage, .errorMessage {
-    padding: 12px 15px;
-    border-radius: 8px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    display: inline-block;
-    list-style-type: none; 
-}
-
-.successMessage {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.errorMessage {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-/* --- Modern Data Tables --- */
-.modern-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden; 
-}
-
-.modern-table th {
-    background-color: #f1f5f9;
-    color: #475569;
-    font-weight: 600;
-    text-align: left;
-    padding: 16px;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.modern-table td {
-    padding: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    color: #334155;
-    vertical-align: middle;
-}
-
-.modern-table tr:last-child td {
-    border-bottom: none;
-}
-
-.modern-table tr:hover {
-    background-color: #f8fafc;
+#content input, #content textarea {
+    padding: 12px 15px; width: 100%; max-width: 450px; border: 1px solid #cbd5e1;
+    border-radius: 8px; font-family: 'Inter', sans-serif; transition: 0.3s;
+    background: white;
 }

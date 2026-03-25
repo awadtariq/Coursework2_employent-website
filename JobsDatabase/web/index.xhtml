@@ -6,8 +6,52 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:define name="content">
-        <h2>Welcome to Job Finder</h2>
-        <p>Find jobs, internships, and volunteer opportunities.</p>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; text-align: center; padding: 20px;">
+            
+            <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 50px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 800px; border: 1px solid rgba(255, 255, 255, 0.3);">
+                
+                <h1 style="font-size: 3rem; color: #1e3a8a; margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;">
+                    Find Your Dream Job <br/> <span style="color: #2563eb;">Today.</span>
+                </h1>
+                
+                <p style="font-size: 1.2rem; color: #475569; margin-bottom: 35px; line-height: 1.6;">
+                    Welcome to <strong>Jobs Pool</strong>, the most modern platform for tracking applications, 
+                    connecting with employers, and managing your professional future.
+                </p>
+
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <h:link outcome="/Jobs.xhtml" styleClass="btn-primary" style="text-decoration: none; padding: 15px 35px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Browse Jobs
+                    </h:link>
+
+                    <h:link outcome="/Register.xhtml" rendered="#{not loginBean.loggedIn}" 
+                            style="background: white; color: #2563eb; padding: 15px 35px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 2px solid #2563eb; transition: 0.3s; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-user-plus"></i> Join Now
+                    </h:link>
+                    
+                    <h:link outcome="/MyJobs.xhtml" rendered="#{loginBean.loggedIn}" 
+                            style="background: #f1f5f9; color: #334155; padding: 15px 35px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.3s; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-briefcase"></i> My Dashboard
+                    </h:link>
+                </div>
+
+                <div style="display: flex; justify-content: space-around; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 30px;">
+                    <div>
+                        <h4 style="margin: 0; color: #1e3a8a; font-size: 1.5rem;">500+</h4>
+                        <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Live Jobs</p>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; color: #1e3a8a; font-size: 1.5rem;">1.2k</h4>
+                        <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Users</p>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; color: #1e3a8a; font-size: 1.5rem;">100%</h4>
+                        <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Free</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </ui:define>
 
 </ui:composition>

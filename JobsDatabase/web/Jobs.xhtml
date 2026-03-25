@@ -7,9 +7,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        
-        <ui:fragment rendered="#{loginBean.loggedIn}">
-            
+        <h:panelGroup rendered="#{loginBean.loggedIn}">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <h2>Available Jobs</h2>
                 <h:form>
@@ -18,80 +16,33 @@
             </div>
 
             <h:form id="jobsForm">
-                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
-
-                <div style="margin-bottom: 30px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <h:outputLabel for="search" value="Search by Title, Location, or Type:" style="font-weight: 600; margin-top: 0;" />
-                    
-                    <h:inputText id="search" value="#{jobBean.searchText}" autocomplete="off" placeholder="e.g. Software Engineer...">
-                        <f:ajax event="keyup" render="jobsTable suggestionsBox suggestionCount" />
-                    </h:inputText>
-                    
-                    <h:outputText id="suggestionCount" value="Matches found: #{jobBean.suggestions.size()}" 
-                                  style="font-size: 0.85rem; color: #64748b; display: block; margin-top: 5px;" />
-
-                    <h:panelGroup id="suggestionsBox" layout="block" styleClass="suggestionBox" rendered="#{not empty jobBean.suggestions}">
-                        <ui:repeat value="#{jobBean.suggestions}" var="s">
-                            <h:panelGroup layout="block" styleClass="suggestionItem">
-                                <h:outputText value="#{s}" />
-                            </h:panelGroup>
-                        </ui:repeat>
-                    </h:panelGroup>
-                </div>
-
                 <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" styleClass="modern-table">
-                    
                     <h:column>
                         <f:facet name="header">Title</f:facet>
-                        <span style="font-weight: 600; color: #1e293b;">#{job.jobTitle}</span>
+                        <span style="font-weight: 600;">#{job.jobTitle}</span>
                     </h:column>
-                    
                     <h:column>
                         <f:facet name="header">Location</f:facet>
-                        <i class="fa-solid fa-location-dot" style="font-size: 0.8rem; color: #94a3b8;"></i> #{job.location}
+                        #{job.location}
                     </h:column>
-                    
-                    <h:column>
-                        <f:facet name="header">Type</f:facet>
-                        <span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">#{job.jobType}</span>
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Salary</f:facet>
-                        <h:outputText value="#{job.salary}">
-                            <f:convertNumber type="currency" currencySymbol="£" />
-                        </h:outputText>
-                    </h:column>
-
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
-                        <div style="display: flex; gap: 15px; align-items: center;">
-                            <h:commandLink action="#{jobBean.trackJob(job)}" title="Save to My Jobs" style="color: #2563eb; text-decoration: none;">
-                                <i class="fa-solid fa-bookmark"></i> Track
-                            </h:commandLink>
-
-                            <h:commandLink action="#{jobBean.prepareEdit(job)}" rendered="#{job.user.userID == loginBean.currentUser.userID}" style="color: #64748b; text-decoration: none;">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                            </h:commandLink>
-
-                            <h:commandLink action="#{jobBean.deleteJob(job)}" rendered="#{job.user.userID == loginBean.currentUser.userID}" 
-                                           onclick="return confirm('Are you sure you want to delete this job?');" style="color: #dc2626; text-decoration: none;">
-                                <i class="fa-solid fa-trash"></i>
-                            </h:commandLink>
-                        </div>
+                        <h:commandLink action="#{jobBean.trackJob(job)}" style="color: #2563eb; text-decoration: none; margin-right: 15px;">
+                            <i class="fa-solid fa-bookmark"></i> Track
+                        </h:commandLink>
                     </h:column>
-
                 </h:dataTable>
             </h:form>
-        </ui:fragment>
+        </h:panelGroup>
 
-        <ui:fragment rendered="#{not loginBean.loggedIn}">
-            <div style="text-align: center; padding: 50px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h:panelGroup rendered="#{not loginBean.loggedIn}">
+            <div style="text-align: center; padding: 60px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: 40px auto;">
                 <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
-                <h2>Sign in to view jobs</h2>
-                <p>Please <h:link outcome="/Login.xhtml" value="Login" style="color: #2563eb; font-weight: bold;"/> to browse our full job database.</p>
+                <h2 style="color: #1e293b;">Login Required</h2>
+                <p style="color: #64748b; margin-bottom: 25px;">You must be signed in to browse the Jobs Pool and track opportunities.</p>
+                <h:link outcome="/Login.xhtml" value="Go to Login Page" styleClass="btn-primary" style="text-decoration: none; display: inline-block;" />
             </div>
-        </ui:fragment>
+        </h:panelGroup>
 
     </ui:define>
 </ui:composition>

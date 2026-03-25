@@ -7,33 +7,46 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Contact Us</h2>
-        <p style="color: #64748b; margin-bottom: 25px;">Have questions? Send us a message and we'll get back to you shortly.</p>
+        <div style="display: flex; flex-direction: column; align-items: center; padding-top: 20px;">
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #1e293b; margin-bottom: 10px;">Contact Us</h2>
+                <p style="color: #64748b;">Have questions? Send us a message and we'll get back to you shortly.</p>
+            </div>
 
-        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 600px;">
-            <h:form id="contactForm">
-                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
+            <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px;">
+                <h:form id="contactForm">
+                    <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-                <h:outputLabel for="name" value="Your Name:" />
-                <h:inputText id="name" value="#{contactBean.name}" required="true" requiredMessage="Please enter your name." />
-                <h:message for="name" styleClass="errorMessage" />
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="name" value="Your Name:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="name" value="#{contactBean.name}" required="true" requiredMessage="Please enter your name." />
+                        <h:message for="name" styleClass="errorMessage" />
+                    </div>
 
-                <h:outputLabel for="email" value="Your Email:" />
-                <h:inputText id="email" value="#{contactBean.email}" required="true" requiredMessage="Please enter your email." />
-                <h:message for="email" styleClass="errorMessage" />
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="email" value="Your Email:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="email" value="#{contactBean.email}" required="true" requiredMessage="Please enter your email." />
+                        <h:message for="email" styleClass="errorMessage" />
+                    </div>
 
-                <h:outputLabel for="subject" value="Subject:" />
-                <h:inputText id="subject" value="#{contactBean.subject}" required="true" requiredMessage="Please enter a subject." />
-                <h:message for="subject" styleClass="errorMessage" />
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="subject" value="Subject:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="subject" value="#{contactBean.subject}" required="true" requiredMessage="Please enter a subject." />
+                        <h:message for="subject" styleClass="errorMessage" />
+                    </div>
 
-                <h:outputLabel for="message" value="Message:" />
-                <h:inputTextarea id="message" value="#{contactBean.message}" rows="6" required="true" requiredMessage="Please enter a message." />
-                <h:message for="message" styleClass="errorMessage" />
+                    <div style="margin-bottom: 25px;">
+                        <h:outputLabel for="message" value="Message:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputTextarea id="message" value="#{contactBean.message}" rows="6" required="true" requiredMessage="Please enter your message." />
+                        <h:message for="message" styleClass="errorMessage" />
+                    </div>
 
-                <div style="margin-top: 25px;">
-                    <h:commandButton value="Send Message" action="#{contactBean.sendMessage}" styleClass="btn-primary" style="margin-top: 0;" />
-                </div>
-            </h:form>
+                    <h:commandButton value="Send Message" action="#{contactBean.sendMessage}" styleClass="btn-primary" style="width: 100%;" />
+                </h:form>
+            </div>
+            
         </div>
     </ui:define>
+
 </ui:composition>
