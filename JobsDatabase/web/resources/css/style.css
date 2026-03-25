@@ -6,8 +6,13 @@ body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f1f5f9;
     color: #334155;
+    
+    /* Modern Background Image from Unsplash */
+    background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop'); 
+    background-size: cover;            
+    background-position: center;       
+    background-attachment: fixed;      
     
     /* Modern Grid Layout */
     display: grid;
@@ -16,7 +21,7 @@ body {
     min-height: 100vh;
 }
 
-/* --- Top Header --- */
+/* --- Top Header & Logo --- */
 #top {
     grid-column: 1 / -1; 
     background: linear-gradient(135deg, #1f3c88, #2563eb);
@@ -29,11 +34,25 @@ body {
     z-index: 10;
 }
 
+/* Make the text logo look like an image logo */
 .header-brand h1 {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.8rem;
+    font-weight: 700;
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between the icon and text */
+}
+
+/* Give the briefcase icon a cool background circle */
+.header-brand h1 i {
+    background-color: white;
+    color: #2563eb; /* Blue icon */
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .top-links a, .logout-btn {
@@ -55,7 +74,7 @@ body {
 
 /* --- Left Sidebar --- */
 #left {
-    background-color: #ffffff;
+    background-color: #ffffff; 
     padding: 25px 20px;
     border-right: 1px solid #e2e8f0;
     box-shadow: 2px 0 5px rgba(0,0,0,0.02);
@@ -80,7 +99,10 @@ body {
 /* --- Main Content Area --- */
 #content {
     padding: 40px;
-    background-color: #f8fafc;
+    
+    /* Frosted glass effect so the background image gracefully peeks through! */
+    background-color: rgba(248, 250, 252, 0.92); 
+    backdrop-filter: blur(5px); 
 }
 
 h2 {
@@ -95,11 +117,10 @@ h2 {
     display: block;
     font-weight: 500;
     color: #475569;
-    margin-top: 20px;   /* Spacing above label */
-    margin-bottom: 6px; /* Tight spacing between label and input */
+    margin-top: 20px;   
+    margin-bottom: 6px; 
 }
 
-/* Added input[type="password"] for your h:inputSecret */
 #content input[type="text"], 
 #content input[type="email"], 
 #content input[type="password"],
@@ -114,7 +135,7 @@ h2 {
     font-size: 0.95rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     display: block;
-    margin-bottom: 0; /* Let the label's margin-top handle the spacing */
+    margin-bottom: 0; 
     background-color: #ffffff;
 }
 
@@ -125,7 +146,7 @@ h2 {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
 }
 
-/* Modern Button Style */
+/* --- Modern Button Style --- */
 .btn-primary {
     background-color: #2563eb;
     color: white;
@@ -151,7 +172,7 @@ h2 {
     font-weight: 500;
     margin-bottom: 20px;
     display: inline-block;
-    list-style-type: none; /* Removes bullet points from JSF messages */
+    list-style-type: none; 
 }
 
 .successMessage {
@@ -164,4 +185,39 @@ h2 {
     background-color: #fee2e2;
     color: #991b1b;
     border: 1px solid #fecaca;
+}
+
+/* --- Modern Data Tables --- */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: white;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden; 
+}
+
+.modern-table th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    text-align: left;
+    padding: 16px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.modern-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.modern-table tr:last-child td {
+    border-bottom: none;
+}
+
+.modern-table tr:hover {
+    background-color: #f8fafc;
 }

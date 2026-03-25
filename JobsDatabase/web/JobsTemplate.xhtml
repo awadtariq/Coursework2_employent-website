@@ -39,8 +39,12 @@
 
         <div id="left">
             <ui:insert name="left">
-                <h:link outcome="index"><i class="fa-solid fa-house"></i> Home</h:link>
-                <h:link outcome="Jobs"><i class="fa-solid fa-list"></i> Job Listings</h:link>
+                <h:link outcome="/index.xhtml"><i class="fa-solid fa-house"></i> Home</h:link>
+                <h:link outcome="/Jobs.xhtml"><i class="fa-solid fa-list"></i> View Jobs</h:link>
+                <h:link outcome="/MyJobs.xhtml"><i class="fa-solid fa-clipboard-user"></i> My Jobs</h:link>
+                <h:link outcome="/Contact.xhtml"><i class="fa-solid fa-envelope"></i> Contact</h:link>
+                <h:link outcome="/Messages.xhtml"><i class="fa-solid fa-comment-dots"></i> Messages</h:link>
+                <h:link outcome="/About.xhtml"><i class="fa-solid fa-circle-info"></i> About Us</h:link>
             </ui:insert>
         </div>
 

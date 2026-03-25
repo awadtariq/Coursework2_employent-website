@@ -7,33 +7,43 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Register</h2>
+        <h2>Create an Account</h2>
 
-        <h:form>
-            <h:messages errorClass="errorMessage" infoClass="successMessage" />
+        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 500px;">
+            <h:form>
+                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-            <h:outputLabel for="username" value="Username:" />
-            <h:inputText id="username" value="#{registerBean.username}" required="true" requiredMessage="Username is required.">
-                <f:validateLength minimum="3" maximum="20" />
-            </h:inputText>
+                <h:outputLabel for="username" value="Username:" />
+                <h:inputText id="username" value="#{registerBean.username}" required="true" requiredMessage="Username is required.">
+                    <f:validateLength minimum="3" maximum="20" />
+                </h:inputText>
+                <h:message for="username" styleClass="errorMessage" />
 
-            <h:outputLabel for="email" value="Email:" />
-            <h:inputText id="email" value="#{registerBean.email}" required="true" requiredMessage="Email is required.">
-                <f:validateRegex pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
-            </h:inputText>
+                <h:outputLabel for="email" value="Email Address:" />
+                <h:inputText id="email" value="#{registerBean.email}" required="true" requiredMessage="Email is required.">
+                    <f:validateRegex pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
+                </h:inputText>
+                <h:message for="email" styleClass="errorMessage" />
 
-            <h:outputLabel for="password" value="Password:" />
-            <h:inputSecret id="password" value="#{registerBean.password}" required="true" requiredMessage="Password is required.">
-                <f:validateLength minimum="6" maximum="30" />
-            </h:inputSecret>
+                <h:outputLabel for="password" value="Password:" />
+                <h:inputSecret id="password" value="#{registerBean.password}" required="true" requiredMessage="Password is required.">
+                    <f:validateLength minimum="6" maximum="30" />
+                </h:inputSecret>
+                <h:message for="password" styleClass="errorMessage" />
 
-            <h:outputLabel for="dob" value="Date of Birth (yyyy-MM-dd):" />
-            <h:inputText id="dob" value="#{registerBean.dateOfBirthInput}">
-                <f:validateRegex pattern="^$|^\d{4}-\d{2}-\d{2}$" />
-            </h:inputText>
+                <h:outputLabel for="dob" value="Date of Birth (yyyy-MM-dd):" />
+                <h:inputText id="dob" value="#{registerBean.dateOfBirthInput}">
+                    <f:validateRegex pattern="^$|^\d{4}-\d{2}-\d{2}$" />
+                </h:inputText>
 
-            <h:commandButton value="Register" action="#{registerBean.register}" styleClass="btn-primary" />
-        </h:form>
+                <div style="margin-top: 25px;">
+                    <h:commandButton value="Register Now" action="#{registerBean.register}" styleClass="btn-primary" style="margin-top: 0; width: 100%;" />
+                </div>
+                
+                <p style="margin-top: 20px; font-size: 0.9rem; text-align: center;">
+                    Already have an account? <h:link outcome="/Login.xhtml" value="Login here" style="color: #2563eb; font-weight: 600; text-decoration: none;" />
+                </p>
+            </h:form>
+        </div>
     </ui:define>
-
 </ui:composition>

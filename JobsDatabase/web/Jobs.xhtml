@@ -1,124 +1,97 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>Jobs Database</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
+        
         <ui:fragment rendered="#{loginBean.loggedIn}">
-            <h2>Available Jobs</h2>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2>Available Jobs</h2>
+                <h:form>
+                    <h:commandButton value="+ Post a Job" action="#{jobBean.prepareCreate}" styleClass="btn-primary" style="margin-top: 0;" />
+                </h:form>
+            </div>
 
-            <h:form>
-                <h:commandButton value="Add New Job" action="#{jobBean.prepareCreate}" />
-                <br/><br/>
+            <h:form id="jobsForm">
+                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-                <h:outputLabel for="search" value="Search Jobs: " />
-                <h:inputText id="search" value="#{jobBean.searchText}">
-                <f:ajax event="keyup" render="jobsTable suggestionsBox suggestionCount" />
-                </h:inputText>
-                <br/><br/>
+                <div style="margin-bottom: 30px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <h:outputLabel for="search" value="Search by Title, Location, or Type:" style="font-weight: 600; margin-top: 0;" />
+                    
+                    <h:inputText id="search" value="#{jobBean.searchText}" autocomplete="off" placeholder="e.g. Software Engineer...">
+                        <f:ajax event="keyup" render="jobsTable suggestionsBox suggestionCount" />
+                    </h:inputText>
+                    
+                    <h:outputText id="suggestionCount" value="Matches found: #{jobBean.suggestions.size()}" 
+                                  style="font-size: 0.85rem; color: #64748b; display: block; margin-top: 5px;" />
 
-                <h:outputText id="suggestionCount" value="Number of suggestions: #{jobBean.suggestions.size()}" />
-                <br/><br/>
+                    <h:panelGroup id="suggestionsBox" layout="block" styleClass="suggestionBox" rendered="#{not empty jobBean.suggestions}">
+                        <ui:repeat value="#{jobBean.suggestions}" var="s">
+                            <h:panelGroup layout="block" styleClass="suggestionItem">
+                                <h:outputText value="#{s}" />
+                            </h:panelGroup>
+                        </ui:repeat>
+                    </h:panelGroup>
+                </div>
 
-                <h:panelGroup id="suggestionsBox" layout="block" styleClass="suggestionBox">
-                <ui:repeat value="#{jobBean.suggestions}" var="suggestion">
-                <h:panelGroup layout="block" styleClass="suggestionItem">
-                <h:outputText value="#{suggestion}" />
-                </h:panelGroup>
-                </ui:repeat>
-                </h:panelGroup>
-                <br/>
-
-                <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" border="1" styleClass="jobTable">
+                <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" styleClass="modern-table">
+                    
                     <h:column>
                         <f:facet name="header">Title</f:facet>
-                        #{job.jobTitle}
+                        <span style="font-weight: 600; color: #1e293b;">#{job.jobTitle}</span>
                     </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Type</f:facet>
-                        #{job.jobTypeDisplay}
-                    </h:column>
-
+                    
                     <h:column>
                         <f:facet name="header">Location</f:facet>
-                        #{job.location}
+                        <i class="fa-solid fa-location-dot" style="font-size: 0.8rem; color: #94a3b8;"></i> #{job.location}
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Type</f:facet>
+                        <span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">#{job.jobType}</span>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">Salary ($)</f:facet>
-                        #{job.salary}
+                        <f:facet name="header">Salary</f:facet>
+                        <h:outputText value="#{job.salary}">
+                            <f:convertNumber type="currency" currencySymbol="£" />
+                        </h:outputText>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">Starts</f:facet>
-                        #{job.jobBegins}
+                        <f:facet name="header">Actions</f:facet>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <h:commandLink action="#{jobBean.trackJob(job)}" title="Save to My Jobs" style="color: #2563eb; text-decoration: none;">
+                                <i class="fa-solid fa-bookmark"></i> Track
+                            </h:commandLink>
+
+                            <h:commandLink action="#{jobBean.prepareEdit(job)}" rendered="#{job.user.userID == loginBean.currentUser.userID}" style="color: #64748b; text-decoration: none;">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </h:commandLink>
+
+                            <h:commandLink action="#{jobBean.deleteJob(job)}" rendered="#{job.user.userID == loginBean.currentUser.userID}" 
+                                           onclick="return confirm('Are you sure you want to delete this job?');" style="color: #dc2626; text-decoration: none;">
+                                <i class="fa-solid fa-trash"></i>
+                            </h:commandLink>
+                        </div>
                     </h:column>
 
-                    <h:column>
-                        <f:facet name="header">Contact Email</f:facet>
-                        #{job.contactEmail}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Status</f:facet>
-                        #{job.status}
-                    </h:column>
-
-                    <h:column>
-                    <f:facet name="header">Actions</f:facet>
-
-                    <!-- Edit only visible to owner -->
-                    <h:commandButton value="Edit"
-                    rendered="#{loginBean.loggedIn and job.user.userID == loginBean.currentUser.userID}"
-                    action="#{jobBean.prepareEdit(job)}" />
-
-                    <!-- Delete only visible to owner -->
-                    <h:commandButton value="Delete"
-                    rendered="#{loginBean.loggedIn and job.user.userID == loginBean.currentUser.userID}"
-                    action="#{jobBean.deleteJob(job)}">
-                    <f:ajax render="jobsTable messages" />
-                    </h:commandButton>
-
-                    <!-- Track visible to any logged-in user -->
-                    <h:commandButton value="Track"
-                    rendered="#{loginBean.loggedIn}"
-                    action="#{jobBean.trackJob(job)}">
-                    <f:ajax render="messages" />
-                    </h:commandButton>
-
-                    </h:column>
                 </h:dataTable>
             </h:form>
         </ui:fragment>
 
         <ui:fragment rendered="#{not loginBean.loggedIn}">
-    <h2>Access denied</h2>
-    <p>You need an account to view available jobs.</p>
-    <p>Please log in if you already have an account, or register if you are a new user.</p>
-
-    <h:link outcome="/Login.xhtml" value="Login" />
-    <h:outputText value=" | " />
-    <h:link outcome="/Register.xhtml" value="Register" />
+            <div style="text-align: center; padding: 50px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h2>Sign in to view jobs</h2>
+                <p>Please <h:link outcome="/Login.xhtml" value="Login" style="color: #2563eb; font-weight: bold;"/> to browse our full job database.</p>
+            </div>
         </ui:fragment>
-    </ui:define>
 
+    </ui:define>
 </ui:composition>
