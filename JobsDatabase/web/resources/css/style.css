@@ -4,20 +4,11 @@
 body {
     font-family: 'Inter', sans-serif;
     margin: 0; padding: 0; color: #334155;
-    
-    /* ONE Background Image for the whole site */
     background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop'); 
-    background-size: cover; 
-    background-position: center; 
-    background-attachment: fixed;      
-    
-    display: grid; 
-    grid-template-columns: 260px 1fr; 
-    grid-template-rows: auto 1fr; 
-    min-height: 100vh;
+    background-size: cover; background-position: center; background-attachment: fixed;      
+    display: grid; grid-template-columns: 260px 1fr; grid-template-rows: auto 1fr; min-height: 100vh;
 }
 
-/* --- Top Header --- */
 #top {
     grid-column: 1 / -1; 
     background: linear-gradient(135deg, #1e3a8a, #2563eb);
@@ -30,64 +21,56 @@ body {
 
 .top-links a, .logout-btn {
     color: #ffffff !important; text-decoration: none !important;
-    font-weight: 600; margin-left: 20px; font-size: 0.9rem; transition: 0.2s;
+    font-weight: 600; margin-left: 20px; font-size: 0.9rem;
 }
 
-/* --- CONSISTENT SIDEBAR --- */
+/* --- SIDEBAR --- */
 #left { 
-    /* Semi-transparent white to let the main background show through slightly */
-    background-color: rgba(255, 255, 255, 0.7); 
-    backdrop-filter: blur(15px); /* This makes the sidebar look like frosted glass */
+    background-color: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(15px); 
     -webkit-backdrop-filter: blur(15px);
-    padding: 30px 15px; 
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    padding: 30px 15px; border-right: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex; flex-direction: column; gap: 5px;
 }
 
 #left a { 
     display: flex; align-items: center; gap: 12px;
-    padding: 14px 18px; text-decoration: none; 
-    color: #1e293b; border-radius: 10px; 
-    transition: all 0.3s ease; 
-    font-weight: 600;
+    padding: 14px 18px; text-decoration: none; color: #1e293b; 
+    border-radius: 10px; transition: all 0.3s ease; font-weight: 600;
 }
 
-#left a:hover { 
-    background-color: rgba(37, 99, 235, 0.1); 
-    color: #2563eb; 
-    transform: translateX(5px);
-}
+#left a:hover { background-color: rgba(37, 99, 235, 0.1); color: #2563eb; transform: translateX(5px); }
 
-/* --- CONSISTENT CONTENT AREA --- */
+/* --- CONTENT --- */
 #content { 
-    padding: 40px; 
-    /* Lighter transparency than the sidebar for contrast */
-    background-color: rgba(255, 255, 255, 0.4); 
-    backdrop-filter: blur(8px); 
-    -webkit-backdrop-filter: blur(8px);
+    padding: 40px; background-color: rgba(255, 255, 255, 0.45); 
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 
-/* Hero Card Styling */
 .hero-card {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 50px;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    border: 1px solid white;
+    background: rgba(255, 255, 255, 0.95); padding: 40px;
+    border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid white;
 }
 
-/* Reusable Components */
-.btn-primary {
-    background-color: #2563eb; color: white; padding: 12px 24px; border: none;
-    border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;
+/* BUTTON FIX: Force white text and blue background */
+.btn-primary, input[type="submit"] {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    padding: 12px 24px;
+    border: none !important;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    cursor: pointer;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: 0.3s;
 }
 
-.btn-primary:hover { background-color: #1d4ed8; transform: translateY(-2px); }
+.btn-primary:hover { background-color: #1d4ed8 !important; transform: translateY(-2px); }
 
 #content input, #content textarea {
     padding: 12px 15px; width: 100%; max-width: 450px; border: 1px solid #cbd5e1;
-    border-radius: 8px; font-family: 'Inter', sans-serif; transition: 0.3s;
-    background: white;
+    border-radius: 8px; font-family: 'Inter', sans-serif; background: white;
 }
