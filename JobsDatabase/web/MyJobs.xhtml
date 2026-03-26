@@ -7,40 +7,37 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>My Tracked Jobs</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h2 style="color: #1e3a8a;">My Tracked Jobs</h2>
+            <h:link outcome="/Jobs.xhtml" value="Find More Jobs" styleClass="btn-primary" style="text-decoration: none;" />
+        </div>
 
-        <h:form>
-            <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
-
-            <h:dataTable id="myJobsTable" value="#{jobBean.trackedJobs}" var="item" styleClass="modern-table" rendered="#{not empty jobBean.trackedJobs}">
-                
+        <h:form id="myJobsForm">
+            <h:dataTable value="#{jobBean.myJobs}" var="myJob" styleClass="modern-table" rendered="#{not empty jobBean.myJobs}">
                 <h:column>
-                    <f:facet name="header">Job Title</f:facet>
-                    #{item.job.jobTitle}
+                    <f:facet name="header">Position</f:facet>
+                    <span style="font-weight: 700;">#{myJob.jobTitle}</span>
                 </h:column>
-                
                 <h:column>
                     <f:facet name="header">Location</f:facet>
-                    #{item.job.location}
+                    #{myJob.location}
                 </h:column>
-
-                <h:column>
-                    <f:facet name="header">Type</f:facet>
-                    #{item.job.jobType}
-                </h:column>
-
                 <h:column>
                     <f:facet name="header">Actions</f:facet>
-                    <h:commandLink value="Remove" action="#{jobBean.untrackJob(item)}" 
-                                   style="color: #dc2626; text-decoration: none; font-weight: 500;" />
+                    <h:commandLink action="#{jobBean.untrackJob(myJob)}" style="color: #dc2626; text-decoration: none; font-weight: 600;">
+                        <i class="fa-solid fa-circle-minus"></i> Remove
+                    </h:commandLink>
                 </h:column>
-
             </h:dataTable>
 
-            <h:outputText value="You haven't tracked any jobs yet." rendered="#{empty jobBean.trackedJobs}" 
-                          style="color: #475569; font-style: italic; display: block; margin-top: 15px;" />
-            
+            <h:panelGroup rendered="#{empty jobBean.myJobs}">
+                <div class="hero-card" style="text-align: center; padding: 60px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                    <h3 style="color: #475569;">No jobs tracked yet</h3>
+                    <p style="color: #94a3b8; margin-bottom: 25px;">Start browsing the Jobs Pool to save opportunities here.</p>
+                    <h:link outcome="/Jobs.xhtml" value="Browse Jobs Now" styleClass="btn-primary" style="text-decoration: none; display: inline-block;" />
+                </div>
+            </h:panelGroup>
         </h:form>
     </ui:define>
-
 </ui:composition>
