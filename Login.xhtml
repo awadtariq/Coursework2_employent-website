@@ -1,42 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-    <ui:define name="top">
-        <h1>Jobs Pool</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:define name="content">
-        <h2>Login</h2>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;">
+            
+            <div class="hero-card" style="width: 100%; max-width: 400px;">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #1e3a8a; font-weight: 800;">Login</h2>
+                
+                <h:form id="loginForm">
+                    <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-        <h:form>
-            <h:outputLabel value="Username:" />
-            <h:inputText value="#{loginBean.username}" required="true"/>
-            <br/><br/>
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="username" value="Username:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="username" value="#{loginBean.username}" required="true" />
+                    </div>
 
-            <h:outputLabel value="Password:" />
-            <h:inputSecret value="#{loginBean.password}" required="true"/>
-            <br/><br/>
+                    <div style="margin-bottom: 25px;">
+                        <h:outputLabel for="password" value="Password:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputSecret id="password" value="#{loginBean.password}" required="true" />
+                    </div>
 
-            <h:commandButton value="Login" action="#{loginBean.login}" />
-            <br/><br/>
-
-            <h:messages style="color:red" />
-        </h:form>
+                    <h:commandButton value="Login" action="#{loginBean.login}" styleClass="btn-primary" 
+                                     style="width: 100%; height: 50px; display: block;" />
+                    
+                    <p style="text-align: center; margin-top: 25px; font-size: 0.95rem; color: #64748b;">
+                        New here? <h:link outcome="/Register.xhtml" value="Create an account" 
+                                          style="color: #2563eb; font-weight: 700; text-decoration: none;" />
+                    </p>
+                </h:form>
+            </div>
+        </div>
     </ui:define>
 
 </ui:composition>
