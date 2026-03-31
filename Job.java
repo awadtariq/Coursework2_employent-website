@@ -1,151 +1,64 @@
-package entity;
+package beans;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Objects;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "JOBS")
 public class Job implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long jobID;
-
-    @Column(nullable = false, length = 200)
-    private String jobTitle;
-
-    @Lob
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false, length = 50)
-    private String jobType;
-
-    private BigDecimal salary;
-
-    @Column(nullable = false, length = 150)
-    private String location;
-
-    @Column(nullable = false)
-    private LocalDate jobBegins;
-
-    @Column(nullable = false)
-    private LocalDate postedDate;
-
-    @Column(nullable = false, length = 50)
-    private String status;
+    private int id;
     
-    @Column(length = 150)
-    private String contactEmail;
+    private String jobTitle;
+    private String location;
+    
+    // THE FIX: Added jobType so AddJob.xhtml can find it
+    private String jobType; 
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    public Job() {} 
 
-    public Job() {
-    }
-
-    public Long getJobID() {
-        return jobID;
-    }
-
-    public void setJobID(Long jobID) {
-        this.jobID = jobID;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
-    public void setJobTitle(String jobTitle) {
+    // Original constructor (Keeps JobBean.java from crashing)
+    public Job(int id, String jobTitle, String location) {
+        this.id = id;
         this.jobTitle = jobTitle;
+        this.location = location;
+        this.jobType = "Full-Time"; // Default fallback
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getJobType() {
-        return jobType;
-    }
-
-    public void setJobType(String jobType) {
+    // New constructor including jobType
+    public Job(int id, String jobTitle, String location, String jobType) {
+        this.id = id;
+        this.jobTitle = jobTitle;
+        this.location = location;
         this.jobType = jobType;
     }
 
-    public BigDecimal getSalary() {
-        return salary;
-    }
-
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public LocalDate getJobBegins() {
-        return jobBegins;
-    }
-
-    public void setJobBegins(LocalDate jobBegins) {
-        this.jobBegins = jobBegins;
-    }
-
-    public LocalDate getPostedDate() {
-        return postedDate;
-    }
-
-    public void setPostedDate(LocalDate postedDate) {
-        this.postedDate = postedDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // --- Getters and Setters ---
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     
-    public String getContactEmail() {
-    return contactEmail;
-}
-
-    public void setContactEmail(String contactEmail) {
-    this.contactEmail = contactEmail;
-}
+    public String getJobTitle() { return jobTitle; }
+    public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
     
-    public String getJobTypeDisplay() {
-    if (jobType == null || jobType.isBlank()) {
-        return "";
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    // THE FIX: JSF uses these to read and write the value from the web page
+    public String getJobType() { return jobType; }
+    public void setJobType(String jobType) { this.jobType = jobType; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Job other = (Job) obj;
+        return id == other.id;
     }
 
-    String lower = jobType.toLowerCase();
-
-    if (lower.length() == 1) {
-        return lower.toUpperCase();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
-
-    return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
-}
 }
