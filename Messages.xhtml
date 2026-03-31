@@ -1,52 +1,42 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>Messages</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Submitted Messages</h2>
+        <h2>Your Messages</h2>
 
         <h:form>
-            <h:dataTable value="#{contactBean.messages}" var="msg" border="1" styleClass="jobTable">
+            <h:dataTable id="messagesTable" value="#{messageBean.messages}" var="msg" styleClass="modern-table" rendered="#{not empty messageBean.messages}">
+                
                 <h:column>
-                    <f:facet name="header">Name</f:facet>
-                    #{msg.name}
+                    <f:facet name="header">From</f:facet>
+                    #{msg.sender}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">Subject</f:facet>
+                    #{msg.subject}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">Content</f:facet>
+                    #{msg.content}
                 </h:column>
 
                 <h:column>
-                    <f:facet name="header">Email</f:facet>
-                    #{msg.email}
+                    <f:facet name="header">Actions</f:facet>
+                    <h:commandLink value="Delete" action="#{messageBean.delete(msg)}" style="color: #dc2626; text-decoration: none; font-weight: 500;" />
                 </h:column>
 
-                <h:column>
-                    <f:facet name="header">Message</f:facet>
-                    #{msg.message}
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">Submitted</f:facet>
-                    #{msg.submittedAt}
-                </h:column>
             </h:dataTable>
+
+            <h:outputText value="You have no messages." rendered="#{empty messageBean.messages}" style="color: #475569; font-style: italic;" />
         </h:form>
+
     </ui:define>
 
 </ui:composition>
