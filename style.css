@@ -1,120 +1,76 @@
+/* --- style.css --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    background-color: #e9eef5;
+    font-family: 'Inter', sans-serif;
+    margin: 0; padding: 0; color: #334155;
+    background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop'); 
+    background-size: cover; background-position: center; background-attachment: fixed;      
+    display: grid; grid-template-columns: 260px 1fr; grid-template-rows: auto 1fr; min-height: 100vh;
 }
 
 #top {
-    background-color: #1f3c88;
-    color: white;
-    padding: 20px;
+    grid-column: 1 / -1; 
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 20;
+}
+
+.header-brand h1 { margin: 0; font-size: 1.7rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.header-brand h1 i { background-color: white; color: #2563eb; padding: 8px; border-radius: 50%; font-size: 1.1rem; }
+
+.top-links a, .logout-btn {
+    color: #ffffff !important; text-decoration: none !important;
+    font-weight: 600; margin-left: 20px; font-size: 0.9rem;
+}
+
+/* --- SIDEBAR --- */
+#left { 
+    background-color: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    padding: 30px 15px; border-right: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex; flex-direction: column; gap: 5px;
+}
+
+#left a { 
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; text-decoration: none; color: #1e293b; 
+    border-radius: 10px; transition: all 0.3s ease; font-weight: 600;
+}
+
+#left a:hover { background-color: rgba(37, 99, 235, 0.1); color: #2563eb; transform: translateX(5px); }
+
+/* --- CONTENT --- */
+#content { 
+    padding: 40px; background-color: rgba(255, 255, 255, 0.45); 
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+
+.hero-card {
+    background: rgba(255, 255, 255, 0.95); padding: 40px;
+    border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid white;
+}
+
+/* BUTTON FIX: Force white text and blue background */
+.btn-primary, input[type="submit"] {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    padding: 12px 24px;
+    border: none !important;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    cursor: pointer;
     text-align: center;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: 0.3s;
 }
 
-#top h1 {
-    margin: 0;
-}
-
-#left {
-    float: left;
-    width: 200px;
-    background-color: #e6e6e6;
-    min-height: 600px;
-    padding: 15px;
-}
-
-#left a {
-    display: block;
-    padding: 8px 0;
-    text-decoration: none;
-    color: #003366;
-}
-
-#left a:hover {
-    font-weight: bold;
-}
-
-#left form {
-    margin: 0;
-    padding: 0;
-}
-
-#content {
-    margin-left: 230px;
-    padding: 20px;
-    min-height: 600px;
-    background-color: #f4f7fb;
-}
-
-h2 {
-    color: #003366;
-}
-
-.suggestionBox {
-    background-color: white;
-    border: 1px solid #999;
-    width: 300px;
-    padding: 8px;
-    margin-top: 5px;
-    color: black;
-}
-
-.suggestionItem {
-    padding: 6px;
-    border-bottom: 1px solid #ddd;
-    background-color: #f9f9f9;
-}
-
-.suggestionItem:last-child {
-    border-bottom: none;
-}
-
-.suggestionItem:hover {
-    background-color: #e6eef8;
-}
-
-#content p {
-    line-height: 1.6;
-}
-
-#content ul {
-    margin-left: 20px;
-}
-
-#content textarea {
-    resize: vertical;
-}
+.btn-primary:hover { background-color: #1d4ed8 !important; transform: translateY(-2px); }
 
 #content input, #content textarea {
-    padding: 5px;
-    width: 300px;
-}
-
-.successMessage {
-    color: green;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.errorMessage {
-    color: red;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.warnMessage {
-    color: orange;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.top a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.top a:hover {
-    text-decoration: underline;
+    padding: 12px 15px; width: 100%; max-width: 450px; border: 1px solid #cbd5e1;
+    border-radius: 8px; font-family: 'Inter', sans-serif; background: white;
 }
