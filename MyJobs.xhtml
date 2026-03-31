@@ -1,74 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>My Jobs</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <ui:fragment rendered="#{loginBean.loggedIn}">
-            <h2>Tracked Jobs</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h2 style="color: #1e3a8a; font-weight: 800;">My Tracked Jobs</h2>
+            <h:link outcome="/Jobs.xhtml" value="Find More Jobs" styleClass="btn-primary" style="text-decoration: none;" />
+        </div>
 
-            <h:form>
-                <h:dataTable value="#{jobBean.trackedJobs}" var="tracked" border="1" styleClass="jobTable">
-                    <h:column>
-                        <f:facet name="header">Title</f:facet>
-                        #{tracked.job.jobTitle}
-                    </h:column>
+        <h:form id="myJobsForm">
+            <h:dataTable value="#{jobBean.myJobs}" var="myJob" 
+                         styleClass="modern-table" 
+                         rendered="#{not empty jobBean.myJobs}">
+                <h:column>
+                    <f:facet name="header">Position</f:facet>
+                    <span style="font-weight: 700; color: #1e293b;">#{myJob.jobTitle}</span>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Location</f:facet>
+                    <span style="color: #64748b;">#{myJob.location}</span>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Actions</f:facet>
+                    <h:commandLink action="#{jobBean.untrackJob(myJob)}" 
+                                   style="color: #dc2626; text-decoration: none; font-weight: 600;">
+                        <i class="fa-solid fa-circle-minus"></i> Remove
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
 
-                    <h:column>
-                        <f:facet name="header">Type</f:facet>
-                        #{tracked.job.jobTypeDisplay}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Location</f:facet>
-                        #{tracked.job.location}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Description</f:facet>
-                        #{tracked.job.description}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Contact Email</f:facet>
-                        #{tracked.job.contactEmail}
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">Actions</f:facet>
-                        <h:commandButton value="Untrack" action="#{jobBean.untrackJob(tracked)}" />
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-        </ui:fragment>
-
-        <ui:fragment rendered="#{not loginBean.loggedIn}">
-    <h2>Access denied</h2>
-    <p>You need an account to track and manage jobs.</p>
-    <p>If you already have an account, please log in. If not, you can register first.</p>
-
-    <h:link outcome="/Login.xhtml" value="Login" />
-    <h:outputText value=" | " />
-    <h:link outcome="/Register.xhtml" value="Register" />
-        </ui:fragment>
+            <h:panelGroup rendered="#{empty jobBean.myJobs}">
+                <div class="hero-card" style="text-align: center; padding: 80px 40px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 3.5rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                    <h3 style="color: #475569; margin-bottom: 10px;">No jobs tracked yet</h3>
+                    <p style="color: #94a3b8; margin-bottom: 30px;">Your saved opportunities will appear here once you track them.</p>
+                    <h:link outcome="/Jobs.xhtml" value="Browse Jobs Pool" styleClass="btn-primary" style="text-decoration: none; display: inline-block;" />
+                </div>
+            </h:panelGroup>
+        </h:form>
     </ui:define>
 
 </ui:composition>
