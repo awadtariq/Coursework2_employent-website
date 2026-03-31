@@ -1,70 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>Jobs Pool</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Edit Job</h2>
+        <h2>Edit Job Details</h2>
 
-        <h:form>
-            <h:messages style="color:red" />
+        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 500px;">
+            <h:form>
+                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-            <h:outputLabel value="Job Title:" />
-            <h:inputText value="#{jobBean.selectedJob.jobTitle}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="title" value="Job Title:" />
+                <h:inputText id="title" value="#{jobBean.selectedJob.jobTitle}" required="true" />
 
-            <h:outputLabel value="Description:" />
-            <h:inputText value="#{jobBean.selectedJob.description}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="salary" value="Salary:" />
+                <h:inputText id="salary" value="#{jobBean.salaryInput}" />
 
-            <h:outputLabel value="Job Type:" />
-            <h:selectOneMenu value="#{jobBean.selectedJob.jobType}" required="true">
-            <f:selectItem itemValue="JOB" itemLabel="Job" />
-            <f:selectItem itemValue="INTERNSHIP" itemLabel="Internship" />
-            <f:selectItem itemValue="VOLUNTEER" itemLabel="Volunteer" />
-            </h:selectOneMenu>
-            <br/><br/>
+                <h:outputLabel for="begins" value="Begins (yyyy-MM-dd):" />
+                <h:inputText id="begins" value="#{jobBean.jobBeginsInput}" />
 
-            <h:outputLabel value="Salary:" />
-            <h:inputText value="#{jobBean.salaryInput}" />
-            <br/><br/>
+                <h:outputLabel for="description" value="Description:" />
+                <h:inputTextarea id="description" value="#{jobBean.selectedJob.description}" rows="5" />
 
-            <h:outputLabel value="Location:" />
-            <h:inputText value="#{jobBean.selectedJob.location}" required="true" />
-            <br/><br/>
-
-            <h:outputLabel value="Job Begins (yyyy-MM-dd):" />
-            <h:inputText value="#{jobBean.jobBeginsInput}" />
-            <br/><br/>
-
-            <h:outputLabel value="Status:" />
-            <h:inputText value="#{jobBean.selectedJob.status}" />
-            <br/><br/>
-
-            <h:outputLabel value="Contact Email:" />
-            <h:inputText value="#{jobBean.selectedJob.contactEmail}" />
-            <br/><br/>
-
-            <h:commandButton value="Update Job" action="#{jobBean.updateJob}" />
-        </h:form>
+                <div style="margin-top: 25px; display: flex; align-items: center;">
+                    <h:commandButton value="Save Changes" action="#{jobBean.updateJob}" styleClass="btn-primary" style="margin-top: 0;" />
+                    <h:link outcome="/Jobs.xhtml" value="Cancel" style="margin-left: 20px; color: #64748b; text-decoration: none;" />
+                </div>
+            </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>
