@@ -1,68 +1,43 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>Add Job</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Add New Job</h2>
+        <h2>Add a New Job</h2>
 
-        <h:form>
+        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 500px;">
+            <h:form>
+                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-            <h:messages style="color:red"/>
+                <h:outputLabel for="title" value="Job Title:" />
+                <h:inputText id="title" value="#{jobBean.selectedJob.jobTitle}" required="true" requiredMessage="Title is required." />
+                <h:message for="title" styleClass="errorMessage" />
 
-            <h:outputLabel value="Job Title:" />
-            <h:inputText value="#{jobBean.selectedJob.jobTitle}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="type" value="Job Type (e.g. Full-time):" />
+                <h:inputText id="type" value="#{jobBean.selectedJob.jobType}" required="true" />
 
-            <h:outputLabel value="Description:" />
-            <h:inputTextarea value="#{jobBean.selectedJob.description}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="location" value="Location:" />
+                <h:inputText id="location" value="#{jobBean.selectedJob.location}" required="true" />
 
-            <h:outputLabel value="Job Type:" />
-            <h:selectOneMenu value="#{jobBean.selectedJob.jobType}" required="true">
-            <f:selectItem itemValue="JOB" itemLabel="Job" />
-            <f:selectItem itemValue="INTERNSHIP" itemLabel="Internship" />
-            <f:selectItem itemValue="VOLUNTEER" itemLabel="Volunteer" />
-            </h:selectOneMenu>
-            <br/><br/>
+                <h:outputLabel for="salary" value="Salary (Decimal):" />
+                <h:inputText id="salary" value="#{jobBean.salaryInput}" required="true" />
 
-            <h:outputLabel value="Salary:" />
-            <h:inputText value="#{jobBean.salaryInput}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="begins" value="Job Begins (yyyy-MM-dd):" />
+                <h:inputText id="begins" value="#{jobBean.jobBeginsInput}" required="true" />
 
-            <h:outputLabel value="Job Begins (yyyy-MM-dd):" />
-            <h:inputText value="#{jobBean.jobBeginsInput}" required="true" />
-            <br/><br/>
+                <h:outputLabel for="description" value="Job Description:" />
+                <h:inputTextarea id="description" value="#{jobBean.selectedJob.description}" rows="5" required="true" />
 
-            <h:outputLabel value="Location:" />
-            <h:inputText value="#{jobBean.selectedJob.location}" required="true" />
-            <br/><br/>
-
-            <h:outputLabel value="Contact Email:" />
-            <h:inputText value="#{jobBean.selectedJob.contactEmail}" required="true" />
-            <br/><br/>
-
-            <h:commandButton value="Create Job" action="#{jobBean.createJob}" />
-
-        </h:form>
+                <div style="margin-top: 25px; display: flex; align-items: center;">
+                    <h:commandButton value="Post Job" action="#{jobBean.createJob}" styleClass="btn-primary" style="margin-top: 0;" />
+                    <h:link outcome="/Jobs.xhtml" value="Cancel" style="margin-left: 20px; color: #64748b; text-decoration: none;" />
+                </div>
+            </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>
