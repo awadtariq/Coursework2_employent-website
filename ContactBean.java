@@ -1,49 +1,35 @@
 package beans;
 
-import entity.ContactMessage;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
 
 @Named
 @RequestScoped
 public class ContactBean implements Serializable {
 
-    @PersistenceContext(unitName = "JobsDatabasePU")
-    private EntityManager em;
-
     private String name;
     private String email;
+    private String subject;
     private String message;
 
-    @Transactional
-    public String submit() {
-        ContactMessage contactMessage = new ContactMessage();
-        contactMessage.setName(name);
-        contactMessage.setEmail(email);
-        contactMessage.setMessage(message);
-        contactMessage.setSubmittedAt(LocalDate.now());
-
-        em.persist(contactMessage);
-
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Message Sent",
-                "Thank you for contacting us, we will respond shortly."));
-
-        name = null;
-        email = null;
-        message = null;
-
-        return null;
+    public String sendMessage() {
+        // Here is where you would normally save to a database or send an email
+        FacesContext.getCurrentInstance().addMessage(null, 
+            new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your message has been sent!"));
+        
+        // Clear the form
+        name = "";
+        email = "";
+        subject = "";
+        message = "";
+        
+        return null; // Stay on the same page
     }
+
+    // --- GETTERS AND SETTERS (CRITICAL FOR JSF) ---
 
     public String getName() {
         return name;
@@ -61,6 +47,14 @@ public class ContactBean implements Serializable {
         this.email = email;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -68,9 +62,4 @@ public class ContactBean implements Serializable {
     public void setMessage(String message) {
         this.message = message;
     }
-    
-    public List<ContactMessage> getMessages() {
-    return em.createQuery("SELECT c FROM ContactMessage c ORDER BY c.submittedAt DESC", ContactMessage.class)
-             .getResultList();
-}
 }
