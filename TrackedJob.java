@@ -1,41 +1,34 @@
 package entity;
 
-import jakarta.persistence.*;
+import beans.Job;
 import java.io.Serializable;
+import jakarta.persistence.Entity; // Changed from javax
+import jakarta.persistence.GeneratedValue; // Changed from javax
+import jakarta.persistence.GenerationType; // Changed from javax
+import jakarta.persistence.Id; // Changed from javax
+import jakarta.persistence.ManyToOne; // Changed from javax
 
 @Entity
-@Table(name = "TRACKEDJOBS")
 public class TrackedJob implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trackID;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "JOB_ID", nullable = false)
     private Job job;
 
     public TrackedJob() {
     }
 
-    public Long getTrackID() {
-        return trackID;
+    public Long getId() {
+        return id;
     }
 
-    public void setTrackID(Long trackID) {
-        this.trackID = trackID;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Job getJob() {
@@ -44,5 +37,29 @@ public class TrackedJob implements Serializable {
 
     public void setJob(Job job) {
         this.job = job;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof TrackedJob)) {
+            return false;
+        }
+        TrackedJob other = (TrackedJob) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entity.TrackedJob[ id=" + id + " ]";
     }
 }
