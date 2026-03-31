@@ -1,55 +1,101 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-    <ui:define name="top">
-        <h1>About Job Finder</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:define name="content">
+        <div style="max-width: 950px; margin: 0 auto; padding-top: 10px;">
+            
+            <div class="hero-card" style="text-align: center; margin-bottom: 30px; padding: 40px;">
+                <h1 style="color: #1e3a8a; font-size: 2.6rem; margin-bottom: 15px; font-weight: 800; letter-spacing: -1px;">About Jobs Pool</h1>
+                <p style="font-size: 1.15rem; color: #475569; line-height: 1.6; max-width: 700px; margin: 0 auto;">
+                    Jobs Pool is a next-generation employment platform designed to bridge the gap between 
+                    ambitious talent and industry leaders through elegant design and robust technology.
+                </p>
+            </div>
 
-        <h2>Who We Are</h2>
-        <p>
-            Job Finder is a web-based job tracking system developed as part of the CS5003 coursework project.
-            The platform allows users to browse available job opportunities, track jobs,
-            and manage tracked jobs.
-        </p>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 25px;">
+                
+                <div class="hero-card" style="padding: 35px;">
+                    <h2 style="color: #2563eb; display: flex; align-items: center; gap: 12px; margin-top: 0; margin-bottom: 20px; font-weight: 800;">
+                        <i class="fa-solid fa-bullseye"></i> Our Goals
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 4px solid #2563eb;">
+                            <strong style="color: #1e293b; display: block; margin-bottom: 5px;">User Centric</strong>
+                            <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Providing a clean, modern UI for a seamless search experience.</p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 4px solid #10b981;">
+                            <strong style="color: #1e293b; display: block; margin-bottom: 5px;">Data Integrity</strong>
+                            <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Secure user authentication and reliable job tracking systems.</p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+                            <strong style="color: #1e293b; display: block; margin-bottom: 5px;">Efficient Tools</strong>
+                            <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Enabling instant communication between talent and recruiters.</p>
+                        </div>
+                    </div>
+                </div>
 
-        <h2>What You Can Do</h2>
-        <ul>
-            <li>Register and log in securely</li>
-            <li>Browse available jobs</li>
-            <li>Search using AJAX-powered filtering</li>
-            <li>Track jobs you are interested in</li>
-            <li>Create, edit and delete job listings</li>
-        </ul>
+                <div class="hero-card" style="padding: 40px;">
+                    <h2 style="color: #2563eb; display: flex; align-items: center; gap: 12px; margin-top: 0; margin-bottom: 15px; font-weight: 800;">
+                        <i class="fa-solid fa-users-gear"></i> The Development Team
+                    </h2>
+                    
+                    <p style="color: #64748b; font-size: 1.05rem; line-height: 1.6; margin-bottom: 35px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px;">
+                        Our team brings together a multidisciplinary approach to software engineering. By combining 
+                        expertise in frontend aesthetics, backend logic, and database architecture, we have built a 
+                        cohesive platform that prioritizes speed, security, and user satisfaction. We believe in 
+                        collaborative development where every line of code serves a purpose.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                        
+                        <div style="background: rgba(248, 250, 252, 0.5); padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                <div style="background: #2563eb; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">AT</div>
+                                <div>
+                                    <strong style="display: block; color: #1e293b;">Awad Tariq</strong>
+                                    <span style="font-size: 0.8rem; color: #2563eb; font-weight: 700; text-transform: uppercase;">Lead Developer</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+                                Awad led the modern UI transformation and Glassmorphism implementation. He refactored session management and ensured the core logic remained robust.
+                            </p>
+                        </div>
 
-        <h2>Technology Used</h2>
-        <ul>
-            <li>Jakarta Server Faces (JSF)</li>
-            <li>Jakarta Persistence API (JPA)</li>
-            <li>GlassFish Server</li>
-            <li>Apache Derby (JavaDB)</li>
-        </ul>
+                        <div style="background: rgba(248, 250, 252, 0.5); padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                <div style="background: #10b981; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">HP</div>
+                                <div>
+                                    <strong style="display: block; color: #1e293b;">Hardik Pandit</strong>
+                                    <span style="font-size: 0.8rem; color: #10b981; font-weight: 700; text-transform: uppercase;">Database Architect</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+                                Hardik managed the complex relational database structures and optimized SQL queries to handle job postings efficiently while maintaining strict security.
+                            </p>
+                        </div>
 
-        <p>
-            This project was developed as a group coursework submission for CS5003.
-        </p>
+                        <div style="background: rgba(248, 250, 252, 0.5); padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                <div style="background: #f59e0b; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">DO</div>
+                                <div>
+                                    <strong style="display: block; color: #1e293b;">Daniel O'Sullivan</strong>
+                                    <span style="font-size: 0.8rem; color: #f59e0b; font-weight: 700; text-transform: uppercase;">System Integration</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+                                Daniel focused on seamless system integration and quality assurance, ensuring that the frontend templates communicated perfectly with the backend beans.
+                            </p>
+                        </div>
 
+                    </div>
+                </div>
+            </div>
+            
+        </div>
     </ui:define>
 
 </ui:composition>
