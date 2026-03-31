@@ -1,59 +1,52 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-    <ui:define name="top">
-        <h1>Contact Us</h1>
-    </ui:define>
-
-    <ui:define name="left">
-        <h:link outcome="/index.xhtml" value="Home" />
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:link outcome="/Jobs.xhtml" value="View Jobs" />
-        <h:link outcome="/MyJobs.xhtml" value="My Jobs" />
-        <h:link outcome="/Register.xhtml" value="Register" />
-        <h:link outcome="/Contact.xhtml" value="Contact" />
-        <h:link outcome="/Messages.xhtml" value="Messages" />
-        <h:link outcome="/About.xhtml" value="About Us" />
-    </ui:define>
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
+        <div style="display: flex; flex-direction: column; align-items: center; padding-top: 20px;">
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #1e293b; margin-bottom: 10px;">Contact Us</h2>
+                <p style="color: #64748b;">Have questions? Send us a message and we'll get back to you shortly.</p>
+            </div>
 
-        <h2>Get in Touch</h2>
-        <p>
-            If you have any questions about Jobs Pool or encounter any issues,
-            please use the form below to contact our team.
-        </p>
+            <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px;">
+                <h:form id="contactForm">
+                    <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
 
-        <h:form>
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="name" value="Your Name:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="name" value="#{contactBean.name}" required="true" requiredMessage="Please enter your name." />
+                        <h:message for="name" styleClass="errorMessage" />
+                    </div>
 
-            <h:messages 
-            errorClass="errorMessage"
-            infoClass="successMessage"
-            warnClass="warnMessage" />
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="email" value="Your Email:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="email" value="#{contactBean.email}" required="true" requiredMessage="Please enter your email." />
+                        <h:message for="email" styleClass="errorMessage" />
+                    </div>
 
-            <h:outputLabel value="Your Name:" />
-            <h:inputText value="#{contactBean.name}" required="true" />
-            <br/><br/>
+                    <div style="margin-bottom: 20px;">
+                        <h:outputLabel for="subject" value="Subject:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputText id="subject" value="#{contactBean.subject}" required="true" requiredMessage="Please enter a subject." />
+                        <h:message for="subject" styleClass="errorMessage" />
+                    </div>
 
-            <h:outputLabel value="Your Email:" />
-            <h:inputText value="#{contactBean.email}" required="true">
-                <f:validateRegex pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
-            </h:inputText>
-            <br/><br/>
+                    <div style="margin-bottom: 25px;">
+                        <h:outputLabel for="message" value="Message:" style="display: block; margin-bottom: 8px; font-weight: 600;" />
+                        <h:inputTextarea id="message" value="#{contactBean.message}" rows="6" required="true" requiredMessage="Please enter your message." />
+                        <h:message for="message" styleClass="errorMessage" />
+                    </div>
 
-            <h:outputLabel value="Message:" />
-            <h:inputTextarea value="#{contactBean.message}" required="true" rows="5" cols="40"/>
-            <br/><br/>
-
-            <h:commandButton value="Send Message" action="#{contactBean.submit}" />
-
-        </h:form>
-
+                    <h:commandButton value="Send Message" action="#{contactBean.sendMessage}" styleClass="btn-primary" style="width: 100%;" />
+                </h:form>
+            </div>
+            
+        </div>
     </ui:define>
 
 </ui:composition>
