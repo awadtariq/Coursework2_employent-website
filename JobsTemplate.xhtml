@@ -7,43 +7,50 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
         <title>Jobs Pool</title>
     </h:head>
 
     <h:body>
 
-
         <div id="top" class="top">
-    <ui:insert name="top">Top</ui:insert>
-
-    <!-- Logged-in view -->
-    <h:panelGroup rendered="#{loginBean.loggedIn and loginBean.currentUser != null}" style="float:right;">
-        <h:outputText value="Hello, #{loginBean.currentUser.username}" />
-        <h:outputText value=" | " />
-        <h:form style="display:inline;">
-            <h:commandLink value="Logout" action="#{loginBean.logout}" />
-        </h:form>
-    </h:panelGroup>
-
-    <!-- Logged-out view -->
-    <h:panelGroup rendered="#{not loginBean.loggedIn}" style="float:right;">
-        <h:link outcome="/Login.xhtml" value="Login" />
-        <h:outputText value=" | " />
-        <h:link outcome="/Register.xhtml" value="Register" />
-    </h:panelGroup>
-        </div>
-        <div>
-            <div id="left">
-                <ui:insert name="left">Left</ui:insert>
+            <div class="header-brand">
+                <ui:insert name="top">
+                    <h1><i class="fa-solid fa-briefcase"></i> Jobs Pool</h1>
+                </ui:insert>
             </div>
-            <div id="content" class="left_content">
-                <ui:insert name="content">Content</ui:insert>
+
+            <div class="top-links">
+                <h:panelGroup rendered="#{loginBean.loggedIn and loginBean.currentUser != null}">
+                    <span style="color: #e2e8f0; margin-right: 15px; font-weight: 500;">
+                        <i class="fa-solid fa-user"></i> Hello, #{loginBean.currentUser.username}
+                    </span>
+                    <h:form style="display:inline;">
+                        <h:commandLink value="Logout" action="#{loginBean.logout}" styleClass="logout-btn" />
+                    </h:form>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{not loginBean.loggedIn}">
+                    <h:link outcome="/Login.xhtml"><i class="fa-solid fa-right-to-bracket"></i> Login</h:link>
+                    <h:link outcome="/Register.xhtml"><i class="fa-solid fa-user-plus"></i> Register</h:link>
+                </h:panelGroup>
             </div>
         </div>
+
+        <div id="left">
+            <ui:insert name="left">
+                <h:link outcome="/index.xhtml"><i class="fa-solid fa-house"></i> Home</h:link>
+                <h:link outcome="/Jobs.xhtml"><i class="fa-solid fa-list"></i> View Jobs</h:link>
+                <h:link outcome="/MyJobs.xhtml"><i class="fa-solid fa-clipboard-user"></i> My Jobs</h:link>
+                <h:link outcome="/Contact.xhtml"><i class="fa-solid fa-envelope"></i> Contact</h:link>
+                <h:link outcome="/Messages.xhtml"><i class="fa-solid fa-comment-dots"></i> Messages</h:link>
+                <h:link outcome="/About.xhtml"><i class="fa-solid fa-circle-info"></i> About Us</h:link>
+            </ui:insert>
+        </div>
+
+        <div id="content" class="left_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
     </h:body>
-
 </html>
-
-
-
-
