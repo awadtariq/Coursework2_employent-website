@@ -16,7 +16,7 @@ public class JobBean implements Serializable {
     private String searchText = "";
     private Job selectedJob;
     private String salaryInput;
-    private String jobBeginsInput; // ADDED
+    private String jobBeginsInput;
 
     public JobBean() {}
 
@@ -36,12 +36,21 @@ public class JobBean implements Serializable {
     public String prepareCreate() {
         this.selectedJob = new Job();
         this.salaryInput = "";
-        this.jobBeginsInput = ""; // ADDED: Clear the field for a fresh form
+        this.jobBeginsInput = "";
         return "AddJob?faces-redirect=true";
     }
 
-    public String createJob() { // FIXED: renamed from addJob() to match your xhtml action
+    public String createJob() {
         selectedJob.setId(jobs.size() + 1);
+
+        // ADDED: Convert salaryInput string to double and set on job
+        try {
+            double salary = Double.parseDouble(salaryInput);
+            selectedJob.setSalary(salary);
+        } catch (NumberFormatException e) {
+            selectedJob.setSalary(0.0);
+        }
+
         jobs.add(selectedJob);
         return "Jobs?faces-redirect=true";
     }
@@ -101,7 +110,6 @@ public class JobBean implements Serializable {
         this.salaryInput = salaryInput;
     }
 
-    // ADDED: getter and setter for jobBeginsInput
     public String getJobBeginsInput() {
         return jobBeginsInput;
     }
