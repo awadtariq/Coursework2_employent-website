@@ -1,18 +1,17 @@
 package entity;
 
-import beans.Job;
+import entity.Job; // FIXED: was beans.Job, Job is now in entity package
 import java.io.Serializable;
-import jakarta.persistence.Entity; // Changed from javax
-import jakarta.persistence.GeneratedValue; // Changed from javax
-import jakarta.persistence.GenerationType; // Changed from javax
-import jakarta.persistence.Id; // Changed from javax
-import jakarta.persistence.ManyToOne; // Changed from javax
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class TrackedJob implements Serializable {
-
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,8 +19,7 @@ public class TrackedJob implements Serializable {
     @ManyToOne
     private Job job;
 
-    public TrackedJob() {
-    }
+    public TrackedJob() {}
 
     public Long getId() {
         return id;
