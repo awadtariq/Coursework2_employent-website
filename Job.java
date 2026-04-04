@@ -10,16 +10,15 @@ public class Job implements Serializable {
 
     @Id
     private int id;
-    
+
     private String jobTitle;
     private String location;
-    
-    // THE FIX: Added jobType so AddJob.xhtml can find it
-    private String jobType; 
+    private String jobType;
+    private String description; // ADDED
 
-    public Job() {} 
+    public Job() {}
 
-    // Original constructor (Keeps JobBean.java from crashing)
+    // Original constructor
     public Job(int id, String jobTitle, String location) {
         this.id = id;
         this.jobTitle = jobTitle;
@@ -27,7 +26,7 @@ public class Job implements Serializable {
         this.jobType = "Full-Time"; // Default fallback
     }
 
-    // New constructor including jobType
+    // Constructor including jobType
     public Job(int id, String jobTitle, String location, String jobType) {
         this.id = id;
         this.jobTitle = jobTitle;
@@ -36,18 +35,22 @@ public class Job implements Serializable {
     }
 
     // --- Getters and Setters ---
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    
+
     public String getJobTitle() { return jobTitle; }
     public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
-    
+
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
-    // THE FIX: JSF uses these to read and write the value from the web page
     public String getJobType() { return jobType; }
     public void setJobType(String jobType) { this.jobType = jobType; }
+
+    // ADDED: getter and setter for description
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
     @Override
     public boolean equals(Object obj) {
