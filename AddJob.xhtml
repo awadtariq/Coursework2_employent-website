@@ -26,8 +26,9 @@
                 <h:outputLabel for="salary" value="Salary (Decimal):" />
                 <h:inputText id="salary" value="#{jobBean.salaryInput}" required="true" />
 
-                <h:outputLabel for="begins" value="Job Begins (yyyy-MM-dd):" />
-                <h:inputText id="begins" value="#{jobBean.jobBeginsInput}" required="true" />
+                <h:outputLabel for="begins" value="Job Begins (DD/MM/YYYY):" />
+                <h:inputText id="begins" value="#{jobBean.jobBeginsInput}" 
+                             placeholder="e.g. 01/06/2025" required="true" />
 
                 <h:outputLabel for="description" value="Job Description:" />
                 <h:inputTextarea id="description" value="#{jobBean.selectedJob.description}" rows="5" required="true" />
