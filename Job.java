@@ -1,4 +1,4 @@
-package beans;
+package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class Job implements Serializable {
     private String jobType;
     private String description;
     private double salary;
-    private String jobBegins; // ADDED
+    private String jobBegins;
 
     public Job() {}
 
@@ -53,7 +53,6 @@ public class Job implements Serializable {
     public double getSalary() { return salary; }
     public void setSalary(double salary) { this.salary = salary; }
 
-    // ADDED: getter and setter for jobBegins
     public String getJobBegins() { return jobBegins; }
     public void setJobBegins(String jobBegins) { this.jobBegins = jobBegins; }
 
