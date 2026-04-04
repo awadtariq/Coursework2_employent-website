@@ -23,16 +23,29 @@
                         <f:facet name="header">Location</f:facet>
                         #{job.location}
                     </h:column>
-                    <!-- ADDED: Salary column -->
                     <h:column>
                         <f:facet name="header">Salary</f:facet>
                         £#{job.salary}
                     </h:column>
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
+
+                        <!-- Track button -->
                         <h:commandLink action="#{jobBean.trackJob(job)}" style="color: #2563eb; text-decoration: none; margin-right: 15px;">
                             <i class="fa-solid fa-bookmark"></i> Track
                         </h:commandLink>
+
+                        <!-- ADDED: Edit button -->
+                        <h:commandLink action="#{jobBean.prepareEdit(job)}" style="color: #16a34a; text-decoration: none; margin-right: 15px;">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </h:commandLink>
+
+                        <!-- ADDED: Delete button with AJAX so table refreshes without full page reload -->
+                        <h:commandLink action="#{jobBean.deleteJob(job)}" style="color: #dc2626; text-decoration: none;">
+                            <i class="fa-solid fa-trash"></i> Delete
+                            <f:ajax execute="@form" render="jobsTable" />
+                        </h:commandLink>
+
                     </h:column>
                 </h:dataTable>
             </h:form>
