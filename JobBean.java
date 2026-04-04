@@ -1,10 +1,12 @@
 package beans;
 
+import entity.Job;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 @Named(value = "jobBean")
@@ -17,6 +19,10 @@ public class JobBean implements Serializable {
     private Job selectedJob;
     private String salaryInput;
     private String jobBeginsInput;
+
+    // ADDED: inject LoginBean so we know who is logged in
+    @Inject
+    private LoginBean loginBean;
 
     public JobBean() {}
 
@@ -50,11 +56,17 @@ public class JobBean implements Serializable {
             selectedJob.setSalary(0.0);
         }
 
+        selectedJob.setJobBegins(jobBeginsInput);
+
+        // ADDED: record which user posted this job
+        if (loginBean != null && loginBean.getCurrentUser() != null) {
+            selectedJob.setPostedBy(loginBean.getCurrentUser().getUsername());
+        }
+
         jobs.add(selectedJob);
         return "Jobs?faces-redirect=true";
     }
 
-    // ADDED: Load the selected job into the form ready for editing
     public String prepareEdit(Job job) {
         this.selectedJob = job;
         this.salaryInput = String.valueOf(job.getSalary());
@@ -62,7 +74,6 @@ public class JobBean implements Serializable {
         return "EditJob?faces-redirect=true";
     }
 
-    // ADDED: Save the edited job back to the list
     public String updateJob() {
         try {
             double salary = Double.parseDouble(salaryInput);
@@ -73,7 +84,6 @@ public class JobBean implements Serializable {
 
         selectedJob.setJobBegins(jobBeginsInput);
 
-        // Find the job in the list and replace it
         for (int i = 0; i < jobs.size(); i++) {
             if (jobs.get(i).getId() == selectedJob.getId()) {
                 jobs.set(i, selectedJob);
@@ -83,7 +93,6 @@ public class JobBean implements Serializable {
         return "Jobs?faces-redirect=true";
     }
 
-    // ADDED: Remove the job from the list (AJAX will refresh the table)
     public void deleteJob(Job job) {
         jobs.remove(job);
         if (myJobs != null) {
@@ -103,13 +112,20 @@ public class JobBean implements Serializable {
         }
     }
 
+    // ADDED: returns true if the logged in user posted this job
+    public boolean isOwner(Job job) {
+        if (loginBean == null || loginBean.getCurrentUser() == null) return false;
+        return loginBean.getCurrentUser().getUsername().equals(job.getPostedBy());
+    }
+
     // --- Getters and Setters ---
 
     public List<Job> getJobs() {
         if (searchText != null && !searchText.isEmpty()) {
             List<Job> filtered = new ArrayList<>();
             for (Job j : jobs) {
-                if (j.getJobTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                if (j.getJobTitle().toLowerCase().contains(searchText.toLowerCase())
+                        || j.getLocation().toLowerCase().contains(searchText.toLowerCase())) {
                     filtered.add(j);
                 }
             }
