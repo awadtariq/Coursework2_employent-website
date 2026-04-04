@@ -2,42 +2,48 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "JOBS")
 public class Job implements Serializable {
 
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
     private String jobTitle;
+
+    @Column(nullable = false, length = 150)
     private String location;
+
+    @Column(nullable = false, length = 50)
     private String jobType;
+
+    @Column(length = 1000)
     private String description;
+
+    @Column(nullable = false)
     private double salary;
+
+    @Column(length = 20)
     private String jobBegins;
-    private String postedBy; // ADDED: tracks which user posted this job
+
+    @Column(length = 100)
+    private String postedBy; // stores the username of who posted the job
 
     public Job() {}
 
-    public Job(int id, String jobTitle, String location) {
-        this.id = id;
-        this.jobTitle = jobTitle;
-        this.location = location;
-        this.jobType = "Full-Time";
-    }
-
-    public Job(int id, String jobTitle, String location, String jobType) {
-        this.id = id;
-        this.jobTitle = jobTitle;
-        this.location = location;
-        this.jobType = jobType;
-    }
-
     // --- Getters and Setters ---
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getJobTitle() { return jobTitle; }
     public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
@@ -57,7 +63,6 @@ public class Job implements Serializable {
     public String getJobBegins() { return jobBegins; }
     public void setJobBegins(String jobBegins) { this.jobBegins = jobBegins; }
 
-    // ADDED: getter and setter for postedBy
     public String getPostedBy() { return postedBy; }
     public void setPostedBy(String postedBy) { this.postedBy = postedBy; }
 
@@ -66,7 +71,7 @@ public class Job implements Serializable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Job other = (Job) obj;
-        return id == other.id;
+        return Objects.equals(id, other.id);
     }
 
     @Override
