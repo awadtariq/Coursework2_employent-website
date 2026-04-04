@@ -10,11 +10,11 @@ public class Job implements Serializable {
 
     @Id
     private int id;
-
     private String jobTitle;
     private String location;
     private String jobType;
-    private String description; // ADDED
+    private String description;
+    private double salary; // ADDED
 
     public Job() {}
 
@@ -23,7 +23,7 @@ public class Job implements Serializable {
         this.id = id;
         this.jobTitle = jobTitle;
         this.location = location;
-        this.jobType = "Full-Time"; // Default fallback
+        this.jobType = "Full-Time";
     }
 
     // Constructor including jobType
@@ -48,9 +48,12 @@ public class Job implements Serializable {
     public String getJobType() { return jobType; }
     public void setJobType(String jobType) { this.jobType = jobType; }
 
-    // ADDED: getter and setter for description
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    // ADDED: getter and setter for salary
+    public double getSalary() { return salary; }
+    public void setSalary(double salary) { this.salary = salary; }
 
     @Override
     public boolean equals(Object obj) {
