@@ -2,39 +2,38 @@ package beans;
 
 import entity.Job;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 @Named(value = "jobBean")
 @SessionScoped
 public class JobBean implements Serializable {
 
-    private List<Job> jobs;
+    @PersistenceContext(unitName = "JobsDatabasePU")
+    private EntityManager em;
+
+    @Inject
+    private LoginBean loginBean;
+
     private List<Job> myJobs;
     private String searchText = "";
     private Job selectedJob;
     private String salaryInput;
     private String jobBeginsInput;
 
-    // ADDED: inject LoginBean so we know who is logged in
-    @Inject
-    private LoginBean loginBean;
-
     public JobBean() {}
 
     @PostConstruct
     public void init() {
-        jobs = new ArrayList<>();
-        myJobs = new ArrayList<>();
-
-        // Mock Data
-        jobs.add(new Job(1, "Software Engineer", "London"));
-        jobs.add(new Job(2, "Java Developer", "Manchester"));
-        jobs.add(new Job(3, "Web Designer", "London"));
+        myJobs = new java.util.ArrayList<>();
     }
 
     // --- Navigation & Actions ---
@@ -46,9 +45,8 @@ public class JobBean implements Serializable {
         return "AddJob?faces-redirect=true";
     }
 
+    @Transactional
     public String createJob() {
-        selectedJob.setId(jobs.size() + 1);
-
         try {
             double salary = Double.parseDouble(salaryInput);
             selectedJob.setSalary(salary);
@@ -58,12 +56,18 @@ public class JobBean implements Serializable {
 
         selectedJob.setJobBegins(jobBeginsInput);
 
-        // ADDED: record which user posted this job
+        // Record which user posted this job
         if (loginBean != null && loginBean.getCurrentUser() != null) {
             selectedJob.setPostedBy(loginBean.getCurrentUser().getUsername());
         }
 
-        jobs.add(selectedJob);
+        // Save to the database
+        em.persist(selectedJob);
+
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Job posted successfully", ""));
+
         return "Jobs?faces-redirect=true";
     }
 
@@ -74,6 +78,7 @@ public class JobBean implements Serializable {
         return "EditJob?faces-redirect=true";
     }
 
+    @Transactional
     public String updateJob() {
         try {
             double salary = Double.parseDouble(salaryInput);
@@ -84,17 +89,23 @@ public class JobBean implements Serializable {
 
         selectedJob.setJobBegins(jobBeginsInput);
 
-        for (int i = 0; i < jobs.size(); i++) {
-            if (jobs.get(i).getId() == selectedJob.getId()) {
-                jobs.set(i, selectedJob);
-                break;
-            }
-        }
+        // Update in the database
+        em.merge(selectedJob);
+
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Job updated successfully", ""));
+
         return "Jobs?faces-redirect=true";
     }
 
+    @Transactional
     public void deleteJob(Job job) {
-        jobs.remove(job);
+        // Find the managed version of the job and remove it
+        Job managedJob = em.find(Job.class, job.getId());
+        if (managedJob != null) {
+            em.remove(managedJob);
+        }
         if (myJobs != null) {
             myJobs.remove(job);
         }
@@ -112,7 +123,7 @@ public class JobBean implements Serializable {
         }
     }
 
-    // ADDED: returns true if the logged in user posted this job
+    // Returns true if the logged in user posted this job
     public boolean isOwner(Job job) {
         if (loginBean == null || loginBean.getCurrentUser() == null) return false;
         return loginBean.getCurrentUser().getUsername().equals(job.getPostedBy());
@@ -120,18 +131,16 @@ public class JobBean implements Serializable {
 
     // --- Getters and Setters ---
 
+    // Reads jobs from the database, with optional search filter
     public List<Job> getJobs() {
         if (searchText != null && !searchText.isEmpty()) {
-            List<Job> filtered = new ArrayList<>();
-            for (Job j : jobs) {
-                if (j.getJobTitle().toLowerCase().contains(searchText.toLowerCase())
-                        || j.getLocation().toLowerCase().contains(searchText.toLowerCase())) {
-                    filtered.add(j);
-                }
-            }
-            return filtered;
+            return em.createQuery(
+                "SELECT j FROM Job j WHERE LOWER(j.jobTitle) LIKE :search " +
+                "OR LOWER(j.location) LIKE :search", Job.class)
+                .setParameter("search", "%" + searchText.toLowerCase() + "%")
+                .getResultList();
         }
-        return jobs;
+        return em.createQuery("SELECT j FROM Job j", Job.class).getResultList();
     }
 
     public List<Job> getMyJobs() {
