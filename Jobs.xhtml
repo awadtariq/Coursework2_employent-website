@@ -7,12 +7,33 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:define name="content">
         <h:panelGroup rendered="#{loginBean.loggedIn}">
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <h2>Available Jobs</h2>
                 <h:form>
-                    <h:commandButton value="+ Post a Job" action="#{jobBean.prepareCreate}" styleClass="btn-primary" style="margin-top: 0;" />
+                    <h:commandButton value="+ Post a Job" action="#{jobBean.prepareCreate}"
+                                     styleClass="btn-primary" style="margin-top: 0;" />
                 </h:form>
             </div>
+
+            <!-- ADDED: Search bar -->
+            <h:form id="searchForm" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <h:inputText value="#{jobBean.searchText}"
+                                 placeholder="Search by title or location..."
+                                 style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; width: 300px;" />
+                    <h:commandButton value="Search" styleClass="btn-primary"
+                                     style="margin-top: 0;">
+                        <f:ajax execute="@form" render="jobsForm" />
+                    </h:commandButton>
+                    <h:commandButton value="Clear" action="#{jobBean.setSearchText('')}"
+                                     styleClass="btn-primary"
+                                     style="margin-top: 0; background: #64748b;">
+                        <f:ajax execute="@form" render="jobsForm" />
+                    </h:commandButton>
+                </div>
+            </h:form>
+
             <h:form id="jobsForm">
                 <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" styleClass="modern-table">
                     <h:column>
@@ -30,31 +51,42 @@
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
 
-                        <!-- Track button -->
-                        <h:commandLink action="#{jobBean.trackJob(job)}" style="color: #2563eb; text-decoration: none; margin-right: 15px;">
+                        <!-- Track always visible -->
+                        <h:commandLink action="#{jobBean.trackJob(job)}"
+                                       style="color: #2563eb; text-decoration: none; margin-right: 15px;">
                             <i class="fa-solid fa-bookmark"></i> Track
                         </h:commandLink>
 
-                        <!-- ADDED: Edit button -->
-                        <h:commandLink action="#{jobBean.prepareEdit(job)}" style="color: #16a34a; text-decoration: none; margin-right: 15px;">
-                            <i class="fa-solid fa-pen"></i> Edit
-                        </h:commandLink>
+                        <!-- UPDATED: Edit only visible to the user who posted the job -->
+                        <h:panelGroup rendered="#{jobBean.isOwner(job)}">
+                            <h:commandLink action="#{jobBean.prepareEdit(job)}"
+                                           style="color: #16a34a; text-decoration: none; margin-right: 15px;">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </h:commandLink>
 
-                        <!-- ADDED: Delete button with AJAX so table refreshes without full page reload -->
-                        <h:commandLink action="#{jobBean.deleteJob(job)}" style="color: #dc2626; text-decoration: none;">
-                            <i class="fa-solid fa-trash"></i> Delete
-                            <f:ajax execute="@form" render="jobsTable" />
-                        </h:commandLink>
+                            <!-- UPDATED: Delete only visible to the user who posted the job -->
+                            <h:commandLink action="#{jobBean.deleteJob(job)}"
+                                           style="color: #dc2626; text-decoration: none;">
+                                <i class="fa-solid fa-trash"></i> Delete
+                                <f:ajax execute="@form" render="jobsTable" />
+                            </h:commandLink>
+                        </h:panelGroup>
 
                     </h:column>
                 </h:dataTable>
             </h:form>
         </h:panelGroup>
+
+        <!-- Not logged in -->
         <h:panelGroup rendered="#{not loginBean.loggedIn}">
             <div style="text-align: center; padding: 60px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: 40px auto;">
-                <h2>Please Log In</h2>
-                <p>You need to be logged in to view available jobs.</p>
-                <h:link outcome="/Login.xhtml" value="Go to Login" styleClass="btn-primary" />
+                <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h2 style="color: #1e3a8a;">Access Restricted</h2>
+                <p style="color: #64748b; margin-bottom: 30px;">You need to be logged in to view available jobs.</p>
+                <div style="display: flex; justify-content: center; gap: 15px;">
+                    <h:link outcome="/Login.xhtml" value="Login" styleClass="btn-primary" style="text-decoration: none;" />
+                    <h:link outcome="/Register.xhtml" value="Register" styleClass="btn-primary" style="text-decoration: none; background: #16a34a;" />
+                </div>
             </div>
         </h:panelGroup>
     </ui:define>
