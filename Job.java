@@ -16,6 +16,7 @@ public class Job implements Serializable {
     private String description;
     private double salary;
     private String jobBegins;
+    private String postedBy; // ADDED: tracks which user posted this job
 
     public Job() {}
 
@@ -55,6 +56,10 @@ public class Job implements Serializable {
 
     public String getJobBegins() { return jobBegins; }
     public void setJobBegins(String jobBegins) { this.jobBegins = jobBegins; }
+
+    // ADDED: getter and setter for postedBy
+    public String getPostedBy() { return postedBy; }
+    public void setPostedBy(String postedBy) { this.postedBy = postedBy; }
 
     @Override
     public boolean equals(Object obj) {
