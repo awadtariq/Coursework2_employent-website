@@ -43,7 +43,6 @@ public class JobBean implements Serializable {
     public String createJob() {
         selectedJob.setId(jobs.size() + 1);
 
-        // ADDED: Convert salaryInput string to double and set on job
         try {
             double salary = Double.parseDouble(salaryInput);
             selectedJob.setSalary(salary);
@@ -53,6 +52,43 @@ public class JobBean implements Serializable {
 
         jobs.add(selectedJob);
         return "Jobs?faces-redirect=true";
+    }
+
+    // ADDED: Load the selected job into the form ready for editing
+    public String prepareEdit(Job job) {
+        this.selectedJob = job;
+        this.salaryInput = String.valueOf(job.getSalary());
+        this.jobBeginsInput = job.getJobBegins();
+        return "EditJob?faces-redirect=true";
+    }
+
+    // ADDED: Save the edited job back to the list
+    public String updateJob() {
+        try {
+            double salary = Double.parseDouble(salaryInput);
+            selectedJob.setSalary(salary);
+        } catch (NumberFormatException e) {
+            selectedJob.setSalary(0.0);
+        }
+
+        selectedJob.setJobBegins(jobBeginsInput);
+
+        // Find the job in the list and replace it
+        for (int i = 0; i < jobs.size(); i++) {
+            if (jobs.get(i).getId() == selectedJob.getId()) {
+                jobs.set(i, selectedJob);
+                break;
+            }
+        }
+        return "Jobs?faces-redirect=true";
+    }
+
+    // ADDED: Remove the job from the list (AJAX will refresh the table)
+    public void deleteJob(Job job) {
+        jobs.remove(job);
+        if (myJobs != null) {
+            myJobs.remove(job);
+        }
     }
 
     public void trackJob(Job job) {
