@@ -15,9 +15,8 @@ public class JobBean implements Serializable {
     private List<Job> myJobs;
     private String searchText = "";
     private Job selectedJob;
-    
-    // THE FIX: Added the missing salaryInput property
-    private String salaryInput; 
+    private String salaryInput;
+    private String jobBeginsInput; // ADDED
 
     public JobBean() {}
 
@@ -25,7 +24,7 @@ public class JobBean implements Serializable {
     public void init() {
         jobs = new ArrayList<>();
         myJobs = new ArrayList<>();
-        
+
         // Mock Data
         jobs.add(new Job(1, "Software Engineer", "London"));
         jobs.add(new Job(2, "Java Developer", "Manchester"));
@@ -36,12 +35,12 @@ public class JobBean implements Serializable {
 
     public String prepareCreate() {
         this.selectedJob = new Job();
-        this.salaryInput = ""; // Clear the input field for a fresh form
-        return "AddJob?faces-redirect=true"; 
+        this.salaryInput = "";
+        this.jobBeginsInput = ""; // ADDED: Clear the field for a fresh form
+        return "AddJob?faces-redirect=true";
     }
 
-    public String addJob() {
-        // Save the job to our list
+    public String createJob() { // FIXED: renamed from addJob() to match your xhtml action
         selectedJob.setId(jobs.size() + 1);
         jobs.add(selectedJob);
         return "Jobs?faces-redirect=true";
@@ -60,7 +59,7 @@ public class JobBean implements Serializable {
     }
 
     // --- Getters and Setters ---
-    
+
     public List<Job> getJobs() {
         if (searchText != null && !searchText.isEmpty()) {
             List<Job> filtered = new ArrayList<>();
@@ -74,18 +73,40 @@ public class JobBean implements Serializable {
         return jobs;
     }
 
-    public void setJobs(List<Job> jobs) { this.jobs = jobs; }
-    
-    public List<Job> getMyJobs() { return myJobs; }
-    public void setMyJobs(List<Job> myJobs) { this.myJobs = myJobs; }
-    
-    public String getSearchText() { return searchText; }
-    public void setSearchText(String searchText) { this.searchText = searchText; }
-    
-    public Job getSelectedJob() { return selectedJob; }
-    public void setSelectedJob(Job selectedJob) { this.selectedJob = selectedJob; }
+    public List<Job> getMyJobs() {
+        return myJobs;
+    }
 
-    // THE FIX: The Getters and Setters for salaryInput
-    public String getSalaryInput() { return salaryInput; }
-    public void setSalaryInput(String salaryInput) { this.salaryInput = salaryInput; }
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
+
+    public Job getSelectedJob() {
+        return selectedJob;
+    }
+
+    public void setSelectedJob(Job selectedJob) {
+        this.selectedJob = selectedJob;
+    }
+
+    public String getSalaryInput() {
+        return salaryInput;
+    }
+
+    public void setSalaryInput(String salaryInput) {
+        this.salaryInput = salaryInput;
+    }
+
+    // ADDED: getter and setter for jobBeginsInput
+    public String getJobBeginsInput() {
+        return jobBeginsInput;
+    }
+
+    public void setJobBeginsInput(String jobBeginsInput) {
+        this.jobBeginsInput = jobBeginsInput;
+    }
 }
