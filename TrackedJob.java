@@ -1,6 +1,5 @@
 package entity;
 
-import entity.Job; // FIXED: was beans.Job, Job is now in entity package
 import java.io.Serializable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
