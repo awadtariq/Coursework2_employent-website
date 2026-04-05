@@ -37,12 +37,14 @@
                         <f:facet name="header">Location</f:facet>
                         <span style="color: #64748b;">#{myJob.location}</span>
                     </h:column>
-                    <!-- ADDED: Salary column -->
                     <h:column>
                         <f:facet name="header">Salary</f:facet>
-                        <span style="color: #16a34a; font-weight: 600;">£#{myJob.salary}</span>
+                        <span style="color: #16a34a; font-weight: 600;">
+                            £<h:outputText value="#{myJob.salary}">
+                                <f:convertNumber pattern="#,##0" />
+                            </h:outputText>
+                        </span>
                     </h:column>
-                    <!-- ADDED: Description column -->
                     <h:column>
                         <f:facet name="header">Description</f:facet>
                         <span style="color: #475569;">#{myJob.description}</span>
