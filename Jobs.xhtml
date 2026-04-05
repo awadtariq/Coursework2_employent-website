@@ -1,10 +1,10 @@
-<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <ui:define name="content">
         <h:panelGroup rendered="#{loginBean.loggedIn}">
 
@@ -16,11 +16,10 @@
                 </h:form>
             </div>
 
-            <!-- Search bar -->
             <h:form id="searchForm" style="margin-bottom: 20px;">
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <h:inputText value="#{jobBean.searchText}"
-                                 placeholder="Search by title or location..."
+                                 pt:placeholder="Search by title or location..."
                                  style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; width: 300px;" />
                     <h:commandButton value="Search" styleClass="btn-primary"
                                      style="margin-top: 0;">
@@ -40,26 +39,32 @@
                         <f:facet name="header">Title</f:facet>
                         <span style="font-weight: 600;">#{job.jobTitle}</span>
                     </h:column>
+
                     <h:column>
                         <f:facet name="header">Location</f:facet>
                         #{job.location}
                     </h:column>
+
                     <h:column>
                         <f:facet name="header">Salary</f:facet>
                         £<h:outputText value="#{job.salary}">
                             <f:convertNumber pattern="#,##0" />
                         </h:outputText>
                     </h:column>
+
+                    <h:column>
+                     <f:facet name="header">Start Date</f:facet>
+                     #{job.formattedJobBegins}
+                    </h:column>
+
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
 
-                        <!-- Track always visible -->
                         <h:commandLink action="#{jobBean.trackJob(job)}"
                                        style="color: #2563eb; text-decoration: none; margin-right: 15px;">
                             <i class="fa-solid fa-bookmark"></i> Track
                         </h:commandLink>
 
-                        <!-- Edit and Delete only for job owner -->
                         <h:panelGroup rendered="#{jobBean.isOwner(job)}">
                             <h:commandLink action="#{jobBean.prepareEdit(job)}"
                                            style="color: #16a34a; text-decoration: none; margin-right: 15px;">
@@ -71,13 +76,11 @@
                                 <f:ajax execute="@form" render="jobsTable" />
                             </h:commandLink>
                         </h:panelGroup>
-
                     </h:column>
                 </h:dataTable>
             </h:form>
         </h:panelGroup>
 
-        <!-- Not logged in -->
         <h:panelGroup rendered="#{not loginBean.loggedIn}">
             <div style="text-align: center; padding: 60px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: 40px auto;">
                 <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
