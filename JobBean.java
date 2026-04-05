@@ -1,7 +1,10 @@
 package beans;
 
 import entity.Job;
+import entity.User;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
@@ -29,14 +32,13 @@ public class JobBean implements Serializable {
     private String salaryInput;
     private String jobBeginsInput;
 
-    public JobBean() {}
+    public JobBean() {
+    }
 
     @PostConstruct
     public void init() {
-        myJobs = new java.util.ArrayList<>();
+        myJobs = new ArrayList<>();
     }
-
-    // --- Navigation & Actions ---
 
     public String prepareCreate() {
         this.selectedJob = new Job();
@@ -47,29 +49,45 @@ public class JobBean implements Serializable {
 
     @Transactional
     public String createJob() {
-        try {
-            double salary = Double.parseDouble(salaryInput);
-            selectedJob.setSalary(salary);
-        } catch (NumberFormatException e) {
-            selectedJob.setSalary(0.0);
+    try {
+        double salary = Double.parseDouble(salaryInput);
+        if (salary <= 0) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Salary must be greater than 0.", ""));
+            return null;
         }
-
-        selectedJob.setJobBegins(jobBeginsInput);
-
-        // Record which user posted this job
-        if (loginBean != null && loginBean.getCurrentUser() != null) {
-            selectedJob.setPostedBy(loginBean.getCurrentUser().getUsername());
-        }
-
-        // Save to the database
-        em.persist(selectedJob);
-
+        selectedJob.setSalary(salary);
+    } catch (NumberFormatException e) {
         FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Job posted successfully", ""));
-
-        return "Jobs?faces-redirect=true";
+            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Please enter a valid salary.", ""));
+        return null;
     }
+
+    selectedJob.setJobBegins(jobBeginsInput);
+    selectedJob.setPostedDate(LocalDate.now().toString());
+    selectedJob.setStatus("OPEN");
+
+    if (loginBean != null && loginBean.getCurrentUser() != null) {
+        User currentUser = loginBean.getCurrentUser();
+        selectedJob.setUser(currentUser);
+        selectedJob.setPostedBy(currentUser.getUsername());
+    } else {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "You must be logged in to post a job.", ""));
+        return null;
+    }
+
+    em.persist(selectedJob);
+
+    FacesContext.getCurrentInstance().addMessage(null,
+        new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "Job posted successfully", ""));
+
+    return "Jobs?faces-redirect=true";
+}
 
     public String prepareEdit(Job job) {
         this.selectedJob = job;
@@ -88,8 +106,6 @@ public class JobBean implements Serializable {
         }
 
         selectedJob.setJobBegins(jobBeginsInput);
-
-        // Update in the database
         em.merge(selectedJob);
 
         FacesContext.getCurrentInstance().addMessage(null,
@@ -101,7 +117,6 @@ public class JobBean implements Serializable {
 
     @Transactional
     public void deleteJob(Job job) {
-        // Find the managed version of the job and remove it
         Job managedJob = em.find(Job.class, job.getId());
         if (managedJob != null) {
             em.remove(managedJob);
@@ -123,15 +138,17 @@ public class JobBean implements Serializable {
         }
     }
 
-    // Returns true if the logged in user posted this job
     public boolean isOwner(Job job) {
-        if (loginBean == null || loginBean.getCurrentUser() == null) return false;
-        return loginBean.getCurrentUser().getUsername().equals(job.getPostedBy());
+        if (job == null || job.getUser() == null || loginBean == null || loginBean.getCurrentUser() == null) {
+            return false;
+        }
+
+        Long jobUserId = job.getUser().getUserID();
+        Long currentUserId = loginBean.getCurrentUser().getUserID();
+
+        return jobUserId != null && currentUserId != null && jobUserId.equals(currentUserId);
     }
 
-    // --- Getters and Setters ---
-
-    // Reads jobs from the database, with optional search filter
     public List<Job> getJobs() {
         if (searchText != null && !searchText.isEmpty()) {
             return em.createQuery(
