@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:panelGroup rendered="#{loginBean.loggedIn}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2>Available Jobs</h2>
+                <h:form>
+                    <h:commandButton value="+ Post a Job" action="#{jobBean.prepareCreate}" styleClass="btn-primary" style="margin-top: 0;" />
+                </h:form>
+            </div>
+
+            <h:form id="jobsForm">
+                <h:dataTable id="jobsTable" value="#{jobBean.jobs}" var="job" styleClass="modern-table">
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        <span style="font-weight: 600;">#{job.jobTitle}</span>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        #{job.location}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandLink action="#{jobBean.trackJob(job)}" style="color: #2563eb; text-decoration: none; margin-right: 15px;">
+                            <i class="fa-solid fa-bookmark"></i> Track
+                        </h:commandLink>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{not loginBean.loggedIn}">
+            <div style="text-align: center; padding: 60px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: 40px auto;">
+                <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h2 style="color: #1e293b;">Login Required</h2>
+                <p style="color: #64748b; margin-bottom: 25px;">You must be signed in to browse the Jobs Pool and track opportunities.</p>
+                <h:link outcome="/Login.xhtml" value="Go to Login Page" styleClass="btn-primary" style="text-decoration: none; display: inline-block;" />
+            </div>
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>
