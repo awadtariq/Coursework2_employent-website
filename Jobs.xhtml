@@ -16,7 +16,7 @@
                 </h:form>
             </div>
 
-            <!-- ADDED: Search bar -->
+            <!-- Search bar -->
             <h:form id="searchForm" style="margin-bottom: 20px;">
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <h:inputText value="#{jobBean.searchText}"
@@ -46,7 +46,9 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">Salary</f:facet>
-                        £#{job.salary}
+                        £<h:outputText value="#{job.salary}">
+                            <f:convertNumber pattern="#,##0" />
+                        </h:outputText>
                     </h:column>
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
@@ -57,14 +59,12 @@
                             <i class="fa-solid fa-bookmark"></i> Track
                         </h:commandLink>
 
-                        <!-- UPDATED: Edit only visible to the user who posted the job -->
+                        <!-- Edit and Delete only for job owner -->
                         <h:panelGroup rendered="#{jobBean.isOwner(job)}">
                             <h:commandLink action="#{jobBean.prepareEdit(job)}"
                                            style="color: #16a34a; text-decoration: none; margin-right: 15px;">
                                 <i class="fa-solid fa-pen"></i> Edit
                             </h:commandLink>
-
-                            <!-- UPDATED: Delete only visible to the user who posted the job -->
                             <h:commandLink action="#{jobBean.deleteJob(job)}"
                                            style="color: #dc2626; text-decoration: none;">
                                 <i class="fa-solid fa-trash"></i> Delete
