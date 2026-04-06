@@ -71,9 +71,9 @@
                                 <i class="fa-solid fa-pen"></i> Edit
                             </h:commandLink>
                             <h:commandLink action="#{jobBean.deleteJob(job)}"
-                                           style="color: #dc2626; text-decoration: none;">
+                                style="color: #dc2626; text-decoration: none;">
+                                <f:ajax execute="@this" render="jobsForm" />
                                 <i class="fa-solid fa-trash"></i> Delete
-                                <f:ajax execute="@form" render="jobsTable" />
                             </h:commandLink>
                         </h:panelGroup>
                     </h:column>
