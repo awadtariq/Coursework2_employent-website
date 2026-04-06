@@ -1,6 +1,7 @@
 package beans;
 
 import entity.Job;
+import entity.TrackedJob;
 import entity.User;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -28,7 +29,6 @@ public class JobBean implements Serializable {
     @Inject
     private LoginBean loginBean;
 
-    private List<Job> myJobs;
     private String searchText = "";
     private Job selectedJob;
     private String salaryInput;
@@ -42,7 +42,7 @@ public class JobBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        myJobs = new ArrayList<>();
+        // no in-memory tracked jobs list needed anymore
     }
 
     public String prepareCreate() {
@@ -72,7 +72,7 @@ public class JobBean implements Serializable {
 
         try {
             LocalDate parsedDate = LocalDate.parse(jobBeginsInput, DISPLAY_DATE_FORMAT);
-            selectedJob.setJobBegins(parsedDate.toString()); // yyyy-MM-dd
+            selectedJob.setJobBegins(parsedDate.toString());
         } catch (DateTimeParseException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -137,7 +137,7 @@ public class JobBean implements Serializable {
 
         try {
             LocalDate parsedDate = LocalDate.parse(jobBeginsInput, DISPLAY_DATE_FORMAT);
-            selectedJob.setJobBegins(parsedDate.toString()); // yyyy-MM-dd
+            selectedJob.setJobBegins(parsedDate.toString());
         } catch (DateTimeParseException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -160,21 +160,82 @@ public class JobBean implements Serializable {
         if (managedJob != null) {
             em.remove(managedJob);
         }
-        if (myJobs != null) {
-            myJobs.remove(job);
+
+        // also remove any tracked-job rows pointing to this job
+        List<TrackedJob> tracked = em.createQuery(
+            "SELECT t FROM TrackedJob t WHERE t.job.id = :jobId", TrackedJob.class)
+            .setParameter("jobId", job.getId())
+            .getResultList();
+
+        for (TrackedJob t : tracked) {
+            TrackedJob managedTracked = em.find(TrackedJob.class, t.getId());
+            if (managedTracked != null) {
+                em.remove(managedTracked);
+            }
         }
     }
 
+    @Transactional
     public void trackJob(Job job) {
-        if (myJobs != null && !myJobs.contains(job)) {
-            myJobs.add(job);
+        if (loginBean == null || loginBean.getCurrentUser() == null || job == null) {
+            return;
+        }
+
+        User currentUser = loginBean.getCurrentUser();
+
+        List<TrackedJob> existing = em.createQuery(
+            "SELECT t FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.id = :jobId",
+            TrackedJob.class)
+            .setParameter("userId", currentUser.getUserID())
+            .setParameter("jobId", job.getId())
+            .getResultList();
+
+        if (existing.isEmpty()) {
+            TrackedJob trackedJob = new TrackedJob();
+            trackedJob.setUser(currentUser);
+            trackedJob.setJob(job);
+            em.persist(trackedJob);
         }
     }
 
+    @Transactional
     public void untrackJob(Job job) {
-        if (myJobs != null) {
-            myJobs.remove(job);
+        if (loginBean == null || loginBean.getCurrentUser() == null || job == null) {
+            return;
         }
+
+        User currentUser = loginBean.getCurrentUser();
+
+        List<TrackedJob> existing = em.createQuery(
+            "SELECT t FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.id = :jobId",
+            TrackedJob.class)
+            .setParameter("userId", currentUser.getUserID())
+            .setParameter("jobId", job.getId())
+            .getResultList();
+
+        for (TrackedJob trackedJob : existing) {
+            TrackedJob managedTracked = em.find(TrackedJob.class, trackedJob.getId());
+            if (managedTracked != null) {
+                em.remove(managedTracked);
+            }
+        }
+    }
+
+    public boolean isTracked(Job job) {
+        if (loginBean == null || loginBean.getCurrentUser() == null || job == null) {
+            return false;
+        }
+
+        User currentUser = loginBean.getCurrentUser();
+
+        Long count = em.createQuery(
+            "SELECT COUNT(t) FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.id = :jobId",
+            Long.class)
+            .setParameter("userId", currentUser.getUserID())
+            .setParameter("jobId", job.getId())
+            .getSingleResult();
+
+        return count > 0;
     }
 
     public boolean isOwner(Job job) {
@@ -200,7 +261,17 @@ public class JobBean implements Serializable {
     }
 
     public List<Job> getMyJobs() {
-        return myJobs;
+        if (loginBean == null || loginBean.getCurrentUser() == null) {
+            return new ArrayList<>();
+        }
+
+        User currentUser = loginBean.getCurrentUser();
+
+        return em.createQuery(
+            "SELECT t.job FROM TrackedJob t WHERE t.user.userID = :userId",
+            Job.class)
+            .setParameter("userId", currentUser.getUserID())
+            .getResultList();
     }
 
     public String getSearchText() {

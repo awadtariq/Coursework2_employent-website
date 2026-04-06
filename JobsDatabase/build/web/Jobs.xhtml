@@ -24,23 +24,17 @@
 
             <!-- Search -->
             <h:form id="searchForm" style="margin-bottom: 20px;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <h:inputText value="#{jobBean.searchText}"
-                                 pt:placeholder="Search by title or location..."
-                                 style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; width: 300px;" />
-
-                    <h:commandButton value="Search" styleClass="btn-primary" style="margin-top: 0;">
-                        <f:ajax execute="@form" render="jobsForm" />
-                    </h:commandButton>
-
-                    <h:commandButton value="Clear"
-                                     action="#{jobBean.setSearchText('')}"
-                                     styleClass="btn-primary"
-                                     style="margin-top: 0; background: #64748b;">
-                        <f:ajax execute="@form" render="jobsForm" />
-                    </h:commandButton>
-                </div>
-            </h:form>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <h:inputText value="#{jobBean.searchText}"
+                     pt:placeholder="Search by title or location..."
+                     style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; width: 300px;">
+                    <f:ajax event="keyup"
+                    execute="@this"
+                    render=":jobsForm:jobsTable"
+                    delay="300" />
+                    </h:inputText>
+             </div>
+             </h:form>       
 
             <!-- Jobs Table -->
             <h:form id="jobsForm">

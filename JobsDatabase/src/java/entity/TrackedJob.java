@@ -1,24 +1,32 @@
 package entity;
 
 import java.io.Serializable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "TRACKEDJOB") // matches your table name
 public class TrackedJob implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // better for Derby
+    @Column(name = "ID")
     private Long id;
 
-    @ManyToOne
+    // Link to Job
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "JOB_ID", nullable = false)
     private Job job;
 
+    // 🔥 CRITICAL: Link to User (this is what enables persistence per user)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private User user;
+
     public TrackedJob() {}
+
+    // --- GETTERS AND SETTERS ---
 
     public Long getId() {
         return id;
@@ -36,11 +44,19 @@ public class TrackedJob implements Serializable {
         this.job = job;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    // --- EQUALS & HASHCODE ---
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return (id != null ? id.hashCode() : 0);
     }
 
     @Override
@@ -49,7 +65,8 @@ public class TrackedJob implements Serializable {
             return false;
         }
         TrackedJob other = (TrackedJob) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.id == null && other.id != null) ||
+            (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -57,6 +74,6 @@ public class TrackedJob implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.TrackedJob[ id=" + id + " ]";
+        return "TrackedJob[id=" + id + "]";
     }
 }
