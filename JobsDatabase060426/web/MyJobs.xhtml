@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{not loginBean.loggedIn}">
+            <div style="text-align: center; padding: 60px; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; margin: 40px auto;">
+                <i class="fa-solid fa-lock" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h2 style="color: #1e3a8a;">Access Restricted</h2>
+                <p style="color: #64748b; margin-bottom: 30px;">You need to be logged in to view your tracked jobs.</p>
+                <div style="display: flex; justify-content: center; gap: 15px;">
+                    <h:link outcome="/Login.xhtml" value="Login" styleClass="btn-primary" style="text-decoration: none;" />
+                    <h:link outcome="/Register.xhtml" value="Register" styleClass="btn-primary" style="text-decoration: none; background: #16a34a;" />
+                </div>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{loginBean.loggedIn}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="color: #1e3a8a; font-weight: 800;">My Tracked Jobs</h2>
+                <h:link outcome="/Jobs.xhtml" value="Find More Jobs" styleClass="btn-primary" style="text-decoration: none;" />
+            </div>
+
+            <h:form id="myJobsForm">
+                <h:dataTable value="#{jobBean.myJobs}" var="myJob"
+                             styleClass="modern-table"
+                             rendered="#{not empty jobBean.myJobs}">
+                    <h:column>
+                        <f:facet name="header">Position</f:facet>
+                        <span style="font-weight: 700; color: #1e293b;">#{myJob.jobTitle}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Location</f:facet>
+                        <span style="color: #64748b;">#{myJob.location}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Salary</f:facet>
+                        <span style="color: #16a34a; font-weight: 600;">
+                            £<h:outputText value="#{myJob.salary}">
+                                <f:convertNumber pattern="#,##0" />
+                            </h:outputText>
+                        </span>
+                    </h:column>
+
+                    <h:column>
+                    <f:facet name="header">Start Date</f:facet>
+                    <span style="color: #475569;">#{myJob.formattedJobBegins}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Description</f:facet>
+                        <span style="color: #475569;">#{myJob.description}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandLink action="#{jobBean.untrackJob(myJob)}"
+                                       style="color: #dc2626; text-decoration: none; font-weight: 600;">
+                            <i class="fa-solid fa-circle-minus"></i> Remove
+                        </h:commandLink>
+                    </h:column>
+                </h:dataTable>
+
+                <h:panelGroup rendered="#{empty jobBean.myJobs}">
+                    <div class="hero-card" style="text-align: center; padding: 80px 40px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 3.5rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                        <h3 style="color: #475569; margin-bottom: 10px;">No jobs tracked yet</h3>
+                        <p style="color: #94a3b8; margin-bottom: 30px;">Your saved opportunities will appear here once you track them.</p>
+                        <h:link outcome="/Jobs.xhtml" value="Browse Jobs Pool" styleClass="btn-primary" style="text-decoration: none; display: inline-block;" />
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

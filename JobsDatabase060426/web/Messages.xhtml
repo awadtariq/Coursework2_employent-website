@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<ui:composition template="/JobsTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h2>User Messages</h2>
+
+        <h:form>
+            <h:dataTable id="messagesTable"
+                         value="#{contactBean.messages}"
+                         var="msg"
+                         styleClass="modern-table"
+                         rendered="#{not empty contactBean.messages}">
+
+                <h:column>
+                    <f:facet name="header">Name</f:facet>
+                    #{msg.name}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Email</f:facet>
+                    #{msg.email}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Message</f:facet>
+                    #{msg.message}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Submitted</f:facet>
+                    #{msg.submittedAt}
+                </h:column>
+
+            </h:dataTable>
+
+            <h:outputText value="There are no user messages."
+                          rendered="#{empty contactBean.messages}"
+                          style="color: #475569; font-style: italic;" />
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
