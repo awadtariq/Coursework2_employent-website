@@ -2,68 +2,205 @@ package beans;
 
 import entity.Job;
 import entity.User;
-import entity.TrackedJob;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
-import jakarta.inject.Inject;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 
-
-
-@Named
+@Named(value = "jobBean")
 @SessionScoped
 public class JobBean implements Serializable {
 
     @PersistenceContext(unitName = "JobsDatabasePU")
     private EntityManager em;
 
-    private Job selectedJob = new Job();
-    private String searchText;
-    private String salaryInput;
-    private String jobBeginsInput;
     @Inject
     private LoginBean loginBean;
 
-    public List<Job> getJobs() {
-        if (searchText == null || searchText.trim().isEmpty()) {
-            return em.createQuery("SELECT j FROM Job j", Job.class).getResultList();
+    private List<Job> myJobs;
+    private String searchText = "";
+    private Job selectedJob;
+    private String salaryInput;
+    private String jobBeginsInput;
+
+    private static final DateTimeFormatter DISPLAY_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public JobBean() {
+    }
+
+    @PostConstruct
+    public void init() {
+        myJobs = new ArrayList<>();
+    }
+
+    public String prepareCreate() {
+        this.selectedJob = new Job();
+        this.salaryInput = "";
+        this.jobBeginsInput = "";
+        return "AddJob?faces-redirect=true";
+    }
+
+    @Transactional
+    public String createJob() {
+        try {
+            double salary = Double.parseDouble(salaryInput);
+            if (salary < 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Salary cannot be negative.", ""));
+                return null;
+            }
+            selectedJob.setSalary(salary);
+        } catch (NumberFormatException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Please enter a valid salary.", ""));
+            return null;
         }
 
-        return em.createQuery(
-                "SELECT j FROM Job j WHERE LOWER(j.jobTitle) LIKE :search OR LOWER(j.location) LIKE :search OR LOWER(j.jobType) LIKE :search",
-                Job.class)
+        try {
+            LocalDate parsedDate = LocalDate.parse(jobBeginsInput, DISPLAY_DATE_FORMAT);
+            selectedJob.setJobBegins(parsedDate.toString()); // yyyy-MM-dd
+        } catch (DateTimeParseException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Please enter a valid start date in the format DD/MM/YYYY.", ""));
+            return null;
+        }
+
+        selectedJob.setPostedDate(LocalDate.now().toString());
+        selectedJob.setStatus("OPEN");
+
+        if (loginBean != null && loginBean.getCurrentUser() != null) {
+            User currentUser = loginBean.getCurrentUser();
+            selectedJob.setUser(currentUser);
+            selectedJob.setPostedBy(currentUser.getUsername());
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "You must be logged in to post a job.", ""));
+            return null;
+        }
+
+        em.persist(selectedJob);
+
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Job posted successfully", ""));
+
+        return "Jobs?faces-redirect=true";
+    }
+
+    public String prepareEdit(Job job) {
+        this.selectedJob = job;
+        this.salaryInput = String.valueOf(job.getSalary());
+
+        try {
+            LocalDate parsedDate = LocalDate.parse(job.getJobBegins());
+            this.jobBeginsInput = parsedDate.format(DISPLAY_DATE_FORMAT);
+        } catch (DateTimeParseException e) {
+            this.jobBeginsInput = job.getJobBegins();
+        }
+
+        return "EditJob?faces-redirect=true";
+    }
+
+    @Transactional
+    public String updateJob() {
+        try {
+            double salary = Double.parseDouble(salaryInput);
+            if (salary < 0) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Salary cannot be negative.", ""));
+                return null;
+            }
+            selectedJob.setSalary(salary);
+        } catch (NumberFormatException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Please enter a valid salary.", ""));
+            return null;
+        }
+
+        try {
+            LocalDate parsedDate = LocalDate.parse(jobBeginsInput, DISPLAY_DATE_FORMAT);
+            selectedJob.setJobBegins(parsedDate.toString()); // yyyy-MM-dd
+        } catch (DateTimeParseException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Please enter a valid start date in the format DD/MM/YYYY.", ""));
+            return null;
+        }
+
+        em.merge(selectedJob);
+
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Job updated successfully", ""));
+
+        return "Jobs?faces-redirect=true";
+    }
+
+    @Transactional
+    public void deleteJob(Job job) {
+        Job managedJob = em.find(Job.class, job.getId());
+        if (managedJob != null) {
+            em.remove(managedJob);
+        }
+        if (myJobs != null) {
+            myJobs.remove(job);
+        }
+    }
+
+    public void trackJob(Job job) {
+        if (myJobs != null && !myJobs.contains(job)) {
+            myJobs.add(job);
+        }
+    }
+
+    public void untrackJob(Job job) {
+        if (myJobs != null) {
+            myJobs.remove(job);
+        }
+    }
+
+    public boolean isOwner(Job job) {
+        if (job == null || job.getUser() == null || loginBean == null || loginBean.getCurrentUser() == null) {
+            return false;
+        }
+
+        Long jobUserId = job.getUser().getUserID();
+        Long currentUserId = loginBean.getCurrentUser().getUserID();
+
+        return jobUserId != null && currentUserId != null && jobUserId.equals(currentUserId);
+    }
+
+    public List<Job> getJobs() {
+        if (searchText != null && !searchText.isEmpty()) {
+            return em.createQuery(
+                "SELECT j FROM Job j WHERE LOWER(j.jobTitle) LIKE :search " +
+                "OR LOWER(j.location) LIKE :search", Job.class)
                 .setParameter("search", "%" + searchText.toLowerCase() + "%")
                 .getResultList();
+        }
+        return em.createQuery("SELECT j FROM Job j", Job.class).getResultList();
     }
 
-    public String getSalaryInput() {
-    return salaryInput;
-    }
-
-    public void setSalaryInput(String salaryInput) {
-    this.salaryInput = salaryInput;
-    }
-
-    public String getJobBeginsInput() {
-    return jobBeginsInput;
-    }
-
-    public void setJobBeginsInput(String jobBeginsInput) {
-    this.jobBeginsInput = jobBeginsInput;
-    }
-    public Job getSelectedJob() {
-        return selectedJob;
-    }
-
-    public void setSelectedJob(Job selectedJob) {
-        this.selectedJob = selectedJob;
+    public List<Job> getMyJobs() {
+        return myJobs;
     }
 
     public String getSearchText() {
@@ -74,196 +211,27 @@ public class JobBean implements Serializable {
         this.searchText = searchText;
     }
 
-   public String prepareCreate() {
-    selectedJob = new Job();
-    jobBeginsInput = "";
-    salaryInput = "";
-    return "/AddJob.xhtml?faces-redirect=true";
-    }
-   
-    public String prepareEdit(Job job) {
-    this.selectedJob = job;
-
-    if (job.getSalary() != null) {
-        this.salaryInput = job.getSalary().toString();
-    } else {
-        this.salaryInput = "";
+    public Job getSelectedJob() {
+        return selectedJob;
     }
 
-    if (job.getJobBegins() != null) {
-        this.jobBeginsInput = job.getJobBegins().toString();
-    } else {
-        this.jobBeginsInput = "";
+    public void setSelectedJob(Job selectedJob) {
+        this.selectedJob = selectedJob;
     }
 
-    return "/EditJob.xhtml?faces-redirect=true";
-}
-
-    @Transactional
-    public String createJob() {
-    selectedJob.setPostedDate(LocalDate.now());
-    selectedJob.setStatus("OPEN");
-
-    if (salaryInput != null && !salaryInput.isBlank()) {
-        selectedJob.setSalary(new java.math.BigDecimal(salaryInput));
-    } else {
-        throw new IllegalStateException("Salary input is blank.");
+    public String getSalaryInput() {
+        return salaryInput;
     }
 
-    if (jobBeginsInput != null && !jobBeginsInput.isBlank()) {
-        selectedJob.setJobBegins(LocalDate.parse(jobBeginsInput));
-    } else {
-        throw new IllegalStateException("Job begins input is blank.");
+    public void setSalaryInput(String salaryInput) {
+        this.salaryInput = salaryInput;
     }
 
-    User sessionUser = loginBean.getCurrentUser();
-    if (sessionUser == null) {
-        throw new IllegalStateException("No logged-in user found.");
+    public String getJobBeginsInput() {
+        return jobBeginsInput;
     }
 
-    User managedUser = em.find(User.class, sessionUser.getUserID());
-    if (managedUser == null) {
-        throw new IllegalStateException("Logged-in user not found in database.");
+    public void setJobBeginsInput(String jobBeginsInput) {
+        this.jobBeginsInput = jobBeginsInput;
     }
-
-    selectedJob.setUser(managedUser);
-
-    if (selectedJob.getJobTitle() == null || selectedJob.getJobTitle().isBlank()) {
-        throw new IllegalStateException("Job title is blank.");
-    }
-
-    if (selectedJob.getDescription() == null || selectedJob.getDescription().isBlank()) {
-        throw new IllegalStateException("Description is blank.");
-    }
-
-    if (selectedJob.getJobType() == null || selectedJob.getJobType().isBlank()) {
-        throw new IllegalStateException("Job type is blank.");
-    }
-
-    if (selectedJob.getLocation() == null || selectedJob.getLocation().isBlank()) {
-        throw new IllegalStateException("Location is blank.");
-    }
-
-    em.persist(selectedJob);
-    em.flush();
-
-    return "/Jobs.xhtml?faces-redirect=true";
-        }
-
-    @Transactional
-    public String updateJob() {
-    if (salaryInput != null && !salaryInput.isBlank()) {
-        selectedJob.setSalary(new java.math.BigDecimal(salaryInput));
-    }
-
-    if (jobBeginsInput != null && !jobBeginsInput.isBlank()) {
-        selectedJob.setJobBegins(LocalDate.parse(jobBeginsInput));
-    }
-
-    em.merge(selectedJob);
-    return "/Jobs.xhtml?faces-redirect=true";
-}
-
-    @Transactional
-public void deleteJob(Job job) {
-
-    Job managedJob = em.find(Job.class, job.getJobID());
-    User currentUser = loginBean.getCurrentUser();
-
-    if (managedJob == null) {
-        return;
-    }
-
-    if (!managedJob.getUser().getUserID().equals(currentUser.getUserID())) {
-
-        FacesContext.getCurrentInstance().addMessage(null,
-            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Permission denied",
-                "You didn't post that job!")
-        );
-
-        return;
-    }
-
-    em.remove(managedJob);
-
-    FacesContext.getCurrentInstance().addMessage(null,
-        new FacesMessage(FacesMessage.SEVERITY_INFO,
-            "Success",
-            "Job deleted successfully.")
-    );
-}
-    
-    public List<String> getSuggestions() {
-    if (searchText == null || searchText.trim().isEmpty()) {
-        return java.util.Collections.emptyList();
-    }
-    
-    
-
-    return em.createQuery(
-            "SELECT DISTINCT j.jobTitle FROM Job j WHERE LOWER(j.jobTitle) LIKE :search",
-            String.class)
-            .setParameter("search", "%" + searchText.toLowerCase() + "%")
-            .setMaxResults(5)
-            .getResultList();
-}
-    
-    @Transactional
-public String trackJob(Job job) {
-
-    User sessionUser = loginBean.getCurrentUser();
-    if (sessionUser == null) {
-        throw new IllegalStateException("No logged-in user found.");
-    }
-
-    User managedUser = em.find(User.class, sessionUser.getUserID());
-    Job managedJob = em.find(Job.class, job.getJobID());
-
-    if (managedUser == null || managedJob == null) {
-        throw new IllegalStateException("User or job not found.");
-    }
-
-    // 🔍 Check if already tracked
-    Long count = em.createQuery(
-            "SELECT COUNT(t) FROM TrackedJob t WHERE t.user.userID = :userId AND t.job.jobID = :jobId",
-            Long.class)
-            .setParameter("userId", managedUser.getUserID())
-            .setParameter("jobId", managedJob.getJobID())
-            .getSingleResult();
-
-    // Only insert if not already tracked
-    if (count == 0) {
-        TrackedJob trackedJob = new TrackedJob();
-        trackedJob.setUser(managedUser);
-        trackedJob.setJob(managedJob);
-        em.persist(trackedJob);
-    }
-
-    return "/Jobs.xhtml?faces-redirect=true";
-}
-
-    public List<TrackedJob> getTrackedJobs() {
-    User sessionUser = loginBean.getCurrentUser();
-    if (sessionUser == null) {
-        return java.util.Collections.emptyList();
-    }
-
-    return em.createQuery(
-            "SELECT t FROM TrackedJob t WHERE t.user.userID = :userId",
-            TrackedJob.class)
-            .setParameter("userId", sessionUser.getUserID())
-            .getResultList();
-}
-    
-    @Transactional
-    public String untrackJob(TrackedJob trackedJob) {
-    TrackedJob managedTrackedJob = em.find(TrackedJob.class, trackedJob.getTrackID());
-
-    if (managedTrackedJob != null) {
-        em.remove(managedTrackedJob);
-    }
-
-    return "/MyJobs.xhtml?faces-redirect=true";
-}
 }

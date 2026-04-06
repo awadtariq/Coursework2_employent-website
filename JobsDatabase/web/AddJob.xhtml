@@ -1,40 +1,100 @@
-<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:define name="content">
         <h2>Add a New Job</h2>
 
         <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); max-width: 500px;">
             <h:form>
-                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" />
+                <h:messages globalOnly="true" errorClass="errorMessage" infoClass="successMessage" layout="list" />
 
-                <h:outputLabel for="title" value="Job Title:" />
-                <h:inputText id="title" value="#{jobBean.selectedJob.jobTitle}" required="true" requiredMessage="Title is required." />
-                <h:message for="title" styleClass="errorMessage" />
+                <div class="form-group">
+                    <h:outputLabel for="title" value="Job Title:" />
+                    <h:inputText id="title"
+                                 value="#{jobBean.selectedJob.jobTitle}"
+                                 required="true"
+                                 requiredMessage="Please enter a job title."
+                                 styleClass="form-control" />
+                    <h:message for="title" styleClass="errorMessage" />
+                </div>
 
-                <h:outputLabel for="type" value="Job Type (e.g. Full-time):" />
-                <h:inputText id="type" value="#{jobBean.selectedJob.jobType}" required="true" />
+                <div class="form-group">
+                    <h:outputLabel for="type" value="Job Type:" />
+                    <h:selectOneMenu id="type"
+                                     value="#{jobBean.selectedJob.jobType}"
+                                     required="true"
+                                     requiredMessage="Please select a job type."
+                                     styleClass="form-control">
+                        <f:selectItem itemLabel="Select a job type" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Job" itemValue="JOB" />
+                        <f:selectItem itemLabel="Internship" itemValue="INTERNSHIP" />
+                        <f:selectItem itemLabel="Volunteer" itemValue="VOLUNTEER" />
+                    </h:selectOneMenu>
+                    <h:message for="type" styleClass="errorMessage" />
+                </div>
 
-                <h:outputLabel for="location" value="Location:" />
-                <h:inputText id="location" value="#{jobBean.selectedJob.location}" required="true" />
+                <div class="form-group">
+                    <h:outputLabel for="location" value="Location:" />
+                    <h:inputText id="location"
+                                 value="#{jobBean.selectedJob.location}"
+                                 required="true"
+                                 requiredMessage="Please enter a location."
+                                 styleClass="form-control" />
+                    <h:message for="location" styleClass="errorMessage" />
+                </div>
 
-                <h:outputLabel for="salary" value="Salary (Decimal):" />
-                <h:inputText id="salary" value="#{jobBean.salaryInput}" required="true" />
+                <div class="form-group">
+                    <h:outputLabel for="salary" value="Salary (£):" />
+                    <h:inputText id="salary"
+                                 value="#{jobBean.salaryInput}"
+                                 required="true"
+                                 requiredMessage="Please enter a salary."
+                                 validatorMessage="Please enter a valid positive number for salary."
+                                 styleClass="form-control"
+                                 pt:placeholder="e.g. 35000">
+                        <f:validateRegex pattern="^\d+(\.\d{1,2})?$" />
+                    </h:inputText>
+                    <h:message for="salary" styleClass="errorMessage" />
+                </div>
 
-                <h:outputLabel for="begins" value="Job Begins (yyyy-MM-dd):" />
-                <h:inputText id="begins" value="#{jobBean.jobBeginsInput}" required="true" />
+                <div class="form-group">
+                    <h:outputLabel for="begins" value="Job Begins (DD/MM/YYYY):" />
+                    <h:inputText id="begins"
+                                 value="#{jobBean.jobBeginsInput}"
+                                 required="true"
+                                 requiredMessage="Please enter the start date."
+                                 validatorMessage="Please enter the date as DD/MM/YYYY."
+                                 styleClass="form-control"
+                                 pt:placeholder="e.g. 01/06/2026">
+                        <f:validateRegex pattern="^([0][1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\d{4}$" />
+                    </h:inputText>
+                    <h:message for="begins" styleClass="errorMessage" />
+                </div>
 
-                <h:outputLabel for="description" value="Job Description:" />
-                <h:inputTextarea id="description" value="#{jobBean.selectedJob.description}" rows="5" required="true" />
+                <div class="form-group">
+                    <h:outputLabel for="description" value="Job Description:" />
+                    <h:inputTextarea id="description"
+                                     value="#{jobBean.selectedJob.description}"
+                                     rows="5"
+                                     required="true"
+                                     requiredMessage="Please enter a job description."
+                                     styleClass="form-control" />
+                    <h:message for="description" styleClass="errorMessage" />
+                </div>
 
                 <div style="margin-top: 25px; display: flex; align-items: center;">
-                    <h:commandButton value="Post Job" action="#{jobBean.createJob}" styleClass="btn-primary" style="margin-top: 0;" />
-                    <h:link outcome="/Jobs.xhtml" value="Cancel" style="margin-left: 20px; color: #64748b; text-decoration: none;" />
+                    <h:commandButton value="Post Job"
+                                     action="#{jobBean.createJob}"
+                                     styleClass="btn-primary"
+                                     style="margin-top: 0;" />
+                    <h:link outcome="/Jobs.xhtml"
+                            value="Cancel"
+                            style="margin-left: 20px; color: #64748b; text-decoration: none;" />
                 </div>
             </h:form>
         </div>

@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition template="/JobsTemplate.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
@@ -7,34 +6,40 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <h2>Your Messages</h2>
+        <h2>User Messages</h2>
 
         <h:form>
-            <h:dataTable id="messagesTable" value="#{messageBean.messages}" var="msg" styleClass="modern-table" rendered="#{not empty messageBean.messages}">
-                
+            <h:dataTable id="messagesTable"
+                         value="#{contactBean.messages}"
+                         var="msg"
+                         styleClass="modern-table"
+                         rendered="#{not empty contactBean.messages}">
+
                 <h:column>
-                    <f:facet name="header">From</f:facet>
-                    #{msg.sender}
-                </h:column>
-                
-                <h:column>
-                    <f:facet name="header">Subject</f:facet>
-                    #{msg.subject}
-                </h:column>
-                
-                <h:column>
-                    <f:facet name="header">Content</f:facet>
-                    #{msg.content}
+                    <f:facet name="header">Name</f:facet>
+                    #{msg.name}
                 </h:column>
 
                 <h:column>
-                    <f:facet name="header">Actions</f:facet>
-                    <h:commandLink value="Delete" action="#{messageBean.delete(msg)}" style="color: #dc2626; text-decoration: none; font-weight: 500;" />
+                    <f:facet name="header">Email</f:facet>
+                    #{msg.email}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Message</f:facet>
+                    #{msg.message}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Submitted</f:facet>
+                    #{msg.submittedAt}
                 </h:column>
 
             </h:dataTable>
 
-            <h:outputText value="You have no messages." rendered="#{empty messageBean.messages}" style="color: #475569; font-style: italic;" />
+            <h:outputText value="There are no user messages."
+                          rendered="#{empty contactBean.messages}"
+                          style="color: #475569; font-style: italic;" />
         </h:form>
 
     </ui:define>

@@ -1,0 +1,147 @@
+-- =========================================
+-- DROP TABLES FIRST (reverse dependency order)
+-- Run these one by one if some tables do not exist.
+-- =========================================
+
+DROP TABLE TRACKEDJOBS;
+DROP TABLE CONTACTMESSAGES;
+DROP TABLE JOBS;
+DROP TABLE USERS;
+
+-- =========================================
+-- CREATE USERS TABLE
+-- =========================================
+
+CREATE TABLE USERS (
+    USERID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),
+    USERNAME VARCHAR(50) NOT NULL,
+    EMAIL VARCHAR(100) NOT NULL,
+    PASSWORDHASH VARCHAR(255) NOT NULL,
+    DATEOFBIRTH DATE,
+    CREATEDAT DATE NOT NULL,
+    PRIMARY KEY (USERID),
+    CONSTRAINT UQ_USERS_USERNAME UNIQUE (USERNAME),
+    CONSTRAINT UQ_USERS_EMAIL UNIQUE (EMAIL)
+);
+
+-- =========================================
+-- INSERT INTO USERS
+-- =========================================
+
+INSERT INTO USERS (USERNAME, EMAIL, PASSWORDHASH, DATEOFBIRTH, CREATEDAT)
+VALUES ('alice', 'alice@example.com', 'password', NULL, DATE('2026-04-04'));
+
+INSERT INTO USERS (USERNAME, EMAIL, PASSWORDHASH, DATEOFBIRTH, CREATEDAT)
+VALUES ('bob', 'bob@example.com', 'password', NULL, DATE('2026-04-04'));
+
+INSERT INTO USERS (USERNAME, EMAIL, PASSWORDHASH, DATEOFBIRTH, CREATEDAT)
+VALUES ('DanielOSullivan', 'danielposullivan@hotmail.com', 'password', DATE('1992-10-13'), DATE('2026-04-05'));
+
+-- =========================================
+-- CREATE JOBS TABLE
+-- =========================================
+
+CREATE TABLE JOBS (
+    JOBID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),
+    JOBTITLE VARCHAR(200) NOT NULL,
+    DESCRIPTION CLOB NOT NULL,
+    JOBTYPE VARCHAR(50) NOT NULL,
+    SALARY DECIMAL(10,2),
+    LOCATION VARCHAR(150) NOT NULL,
+    JOBBEGINS DATE NOT NULL,
+    POSTEDDATE DATE NOT NULL,
+    STATUS VARCHAR(50) NOT NULL,
+    CONTACTEMAIL VARCHAR(150),
+    USER_ID INTEGER NOT NULL,
+    POSTEDBY VARCHAR(100),
+    PRIMARY KEY (JOBID),
+    CONSTRAINT FK_JOBS_USER FOREIGN KEY (USER_ID)
+        REFERENCES USERS (USERID),
+    CONSTRAINT CHK_JOBS_TYPE CHECK (JOBTYPE IN ('JOB', 'INTERNSHIP', 'VOLUNTEER')),
+    CONSTRAINT CHK_JOBS_STATUS CHECK (STATUS IN ('OPEN', 'CLOSED')),
+    CONSTRAINT CHK_JOBS_SALARY CHECK (SALARY >= 0)
+);
+
+-- =========================================
+-- INSERT INTO JOBS
+-- =========================================
+
+INSERT INTO JOBS
+    (JOBTITLE, DESCRIPTION, JOBTYPE, SALARY, LOCATION, JOBBEGINS, POSTEDDATE, STATUS, CONTACTEMAIL, USER_ID, POSTEDBY)
+VALUES
+    ('Junior Developer', 'Entry-level Java developer role.', 'JOB', 28000.00, 'London',
+     DATE('2026-04-01'), DATE('2026-04-04'), 'OPEN', 'alice@example.com', 1, 'alice');
+
+INSERT INTO JOBS
+    (JOBTITLE, DESCRIPTION, JOBTYPE, SALARY, LOCATION, JOBBEGINS, POSTEDDATE, STATUS, CONTACTEMAIL, USER_ID, POSTEDBY)
+VALUES
+    ('Software Internship', '3-month summer internship.', 'INTERNSHIP', 18000.00, 'Manchester',
+     DATE('2026-06-01'), DATE('2026-04-04'), 'OPEN', 'alice@example.com', 1, 'alice');
+
+INSERT INTO JOBS
+    (JOBTITLE, DESCRIPTION, JOBTYPE, SALARY, LOCATION, JOBBEGINS, POSTEDDATE, STATUS, CONTACTEMAIL, USER_ID, POSTEDBY)
+VALUES
+    ('Developer', 'Work full time as a developer!', 'JOB', 190000.00, 'London',
+     DATE('2026-01-06'), DATE('2026-04-05'), 'OPEN', NULL, 3, 'DanielOSullivan');
+
+INSERT INTO JOBS
+    (JOBTITLE, DESCRIPTION, JOBTYPE, SALARY, LOCATION, JOBBEGINS, POSTEDDATE, STATUS, CONTACTEMAIL, USER_ID, POSTEDBY)
+VALUES
+    ('Python Intern', 'Learn Python!', 'INTERNSHIP', 185000.00, 'New York',
+     DATE('2026-05-05'), DATE('2026-04-05'), 'OPEN', NULL, 3, 'DanielOSullivan');
+
+INSERT INTO JOBS
+    (JOBTITLE, DESCRIPTION, JOBTYPE, SALARY, LOCATION, JOBBEGINS, POSTEDDATE, STATUS, CONTACTEMAIL, USER_ID, POSTEDBY)
+VALUES
+    ('Volunteer Coding Mentor', 'Help beginners learn coding.', 'VOLUNTEER', 0.00, 'Remote',
+     DATE('2026-07-01'), DATE('2026-04-06'), 'OPEN', NULL, 2, 'bob');
+
+-- =========================================
+-- CREATE TRACKEDJOBS TABLE
+-- =========================================
+
+CREATE TABLE TRACKEDJOBS (
+    TRACKEDJOBID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),
+    USER_ID INTEGER NOT NULL,
+    JOB_ID INTEGER NOT NULL,
+    PRIMARY KEY (TRACKEDJOBID),
+    CONSTRAINT FK_TRACKEDJOBS_USER FOREIGN KEY (USER_ID)
+        REFERENCES USERS (USERID),
+    CONSTRAINT FK_TRACKEDJOBS_JOB FOREIGN KEY (JOB_ID)
+        REFERENCES JOBS (JOBID),
+    CONSTRAINT UQ_TRACKEDJOBS UNIQUE (USER_ID, JOB_ID)
+);
+
+-- =========================================
+-- OPTIONAL SAMPLE TRACKED JOBS
+-- =========================================
+
+INSERT INTO TRACKEDJOBS (USER_ID, JOB_ID)
+VALUES (3, 1);
+
+INSERT INTO TRACKEDJOBS (USER_ID, JOB_ID)
+VALUES (3, 2);
+
+-- =========================================
+-- CREATE CONTACTMESSAGES TABLE
+-- =========================================
+
+CREATE TABLE CONTACTMESSAGES (
+    MESSAGEID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),
+    NAME VARCHAR(100) NOT NULL,
+    EMAIL VARCHAR(100) NOT NULL,
+    MESSAGE CLOB NOT NULL,
+    SUBMITTEDAT DATE NOT NULL,
+    PRIMARY KEY (MESSAGEID)
+);
+
+-- =========================================
+-- INSERT INTO CONTACTMESSAGES
+-- =========================================
+
+INSERT INTO CONTACTMESSAGES (NAME, EMAIL, MESSAGE, SUBMITTEDAT)
+VALUES ('Daniel O''Sullivan', 'danielposullivan@hotmail.com', 'Cool website!', DATE('2026-04-05'));
