@@ -175,7 +175,7 @@ public String getFormattedJobType() {
 
     switch (jobType) {
         case "JOB":
-            return "Full-time";
+            return "Job";
         case "INTERNSHIP":
             return "Internship";
         case "VOLUNTEER":

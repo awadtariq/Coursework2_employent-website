@@ -170,3 +170,29 @@ select[aria-invalid="true"] {
     border: 1px solid #dc2626 !important;
     background-color: #fef2f2;
 }
+
+.job-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Job */
+.job-badge.job {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+/* Internship */
+.job-badge.internship {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+}
+
+/* Volunteer */
+.job-badge.volunteer {
+    background-color: #f1f5f9;
+    color: #475569;
+}
